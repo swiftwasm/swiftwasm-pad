@@ -1,0 +1,43 @@
+a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+}
+
+#github-search-form {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+
+.github-repository {
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid #e1e4e8;
+    padding: 16px;
+}
+
+.github-repository-content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+}
+
+.github-thumb {
+    width: 80px;
+    height: 80px;
+}
+
+.loading-icon {
+    margin-left: auto;
+    margin-right: auto;
+    width: 32px;
+    height: 32px;
+    animation:spin 0.7s linear infinite;
+}
+
+@keyframes spin { 100% { transform:rotate(360deg); } }

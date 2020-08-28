@@ -1,0 +1,21 @@
+{
+  "name": "TokamakPad",
+  "dependencies": {
+    "@wasmer/wasi": "^0.9.1",
+    "@wasmer/wasmfs": "^0.9.1",
+    "javascript-kit-swift": "0.5.0"
+  },
+  "devDependencies": {
+    "@swiftwasm/swift-webpack-plugin": "1.0.4",
+    "copy-webpack-plugin": "^5.1.1",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.dev.js",
+    "build:prod": "webpack --config webpack.prod.js",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js"
+  }
+}
