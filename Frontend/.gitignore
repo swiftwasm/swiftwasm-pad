@@ -6,4 +6,5 @@ xcuserdata/
 dist
 node_modules
 
-/third-party
+/third-party/*
+!/third-party/.gitkeep
