@@ -39,3 +39,26 @@ public class Promise: JSValueConvertible {
         return .object(ref)
     }
 }
+
+import OpenCombine
+
+struct JSError: Error {
+    let value: JSValue
+    init(value: JSValue) {
+        self.value = value
+    }
+}
+
+func futurefy(_ promise: Promise) -> Future<JSValue, JSError> {
+    Future { resolver in
+        promise
+            .catch { error in
+                resolver(.failure(JSError(value: error)))
+            }
+            
+            .then { value in
+                resolver(.success(value))
+                return .undefined
+            }
+    }
+}
