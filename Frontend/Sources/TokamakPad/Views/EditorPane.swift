@@ -9,8 +9,11 @@ struct EditorPane: View {
     
     final class State: ObservableObject {
         let textBinding: Binding<String>
-        init(textBinding: Binding<String>) {
+        let onRun: () -> Void
+        init(textBinding: Binding<String>,
+             onRun: @escaping () -> Void) {
             self.textBinding = textBinding
+            self.onRun = onRun
         }
 
         var editorRef: JSObjectRef?
@@ -30,21 +33,21 @@ struct EditorPane: View {
         var cancellables: [AnyCancellable] = []
     }
     
-    @StateObject private var state: State 
+    @StateObject private var state: State
     
-    init(content: Binding<String>) {
+    init(content: Binding<String>, onRun: @escaping () -> Void) {
         self._state = StateObject(
-            wrappedValue: State(textBinding: content)
+            wrappedValue: State(textBinding: content, onRun: onRun)
         )
     }
 
     var body: some View {
         HTML("div", ["class": "editor-pane"]) {
-            RunButton()
+            RunButton(action: state.onRun)
                 .id("run-button")
         }
         .bindKey(.ctrlAndEnter) {
-            print("Press cmd-enter")
+            state.onRun()
         }
         ._domRef($state.observedNodeRef)
         ._onMount { mountCodeMirror() }

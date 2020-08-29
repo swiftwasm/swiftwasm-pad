@@ -4,12 +4,12 @@ import JavaScriptKit
 
 struct Editor: View {
     @State var code: String
-    @ObservedObject
-    var runner: Runner
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            EditorPane(content: $code)
+            EditorPane(content: $code) {
+                print("Run: " + code)
+            }
             Color.white
             Color.white
         }
@@ -33,9 +33,10 @@ struct EditorApp: App {
         WindowGroup("Counter Demo") {
             VStack {
                 NavigationHeader()
-                Editor(code: initialTemplate, runner: runner)
+                Editor(code: initialTemplate)
             }
             .id("root-stack")
+            .environmentObject(runner)
         }
     }
 }
