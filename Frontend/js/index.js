@@ -2,12 +2,12 @@ import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 
-
 global._triggerDebugger = () => {
     debugger
 };
 
 window.swiftExports = {
+  CodeMirror: CodeMirror,
   execWasm: async (arrayBuffer) => {
     const wasmFs = new WasmFs();
     const outputArea = document.getElementById("output-area")

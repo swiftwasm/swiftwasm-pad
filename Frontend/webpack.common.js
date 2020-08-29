@@ -26,7 +26,11 @@ module.exports = (mode) => {
         dist: outputPath,
         config: mode == 'development' ? 'debug' : 'release'
       }),
-      new CopyPlugin([staticPath]),
+      new CopyPlugin(
+        [
+          { from: staticPath, to: outputPath },
+        ],
+      ),
     ],
   };
   if (mode == 'development') {
