@@ -12,10 +12,14 @@ struct Editor: View {
             EditorPane(content: $code) {
                 runner.run(code)
             }
-//            OutputPane()
-            ConsolePane()
+            DynamicHTML("div", ["style": "flex-basis: 6px;"])
+            VStack {
+                Color.blue
+                ConsolePane()
+            }
+            .id("left-pane")
         }
-        .id("editor-view")
+        .id("panels")
     }
 }
 

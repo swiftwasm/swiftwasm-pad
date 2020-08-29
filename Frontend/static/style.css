@@ -1,8 +1,8 @@
-body {
-    /* font-family: "Roboto",sans-serif; */
-    font-size: 14px;
+/* Third-party patches */
+
+.CodeMirror {
+    height: 100%;
     font-family: "Roboto Mono",monospace;
-    font-weight: 400
 }
 
 .CodeMirror-scroll {
@@ -15,9 +15,12 @@ body {
     position: relative;
 }
 
-#editor-view {
-    width: 100%;
-    height: 100%;
+
+
+body {
+    font-size: 14px;
+    font-family: "Roboto Mono",monospace;
+    font-weight: 400
 }
 
 #root-stack {
@@ -25,15 +28,16 @@ body {
     height: 100%;
 }
 
-.editor-pane {
-    width: 50%;
-    margin-left: 16px;
-    position: relative;
+#panels {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
-.CodeMirror {
-    height: 100%;
-    font-family: "Roboto Mono",monospace;
+#editor-pane {
+    flex-basis: calc(50% - 3px);
+    position: relative;
 }
 
 #run-button {
@@ -64,12 +68,23 @@ body {
     background: #ccc;
 }
 
+#left-pane {
+    display: flex;
+    flex-basis: calc(50% - 3px);
+    height: 100%;
+}
+
 #console-pane {
     overflow-y: auto;
-    width: 100%;
     font-family: "Roboto Mono",monospace !important;
     color: white;
     white-space: pre-wrap;
     font-size: 14px;
     line-height: 20px;
+    width: 100%;
+    flex-basis: calc(50% - 3px);
+}
+
+#log-list {
+    height: calc(100% - 48px) !important;
 }

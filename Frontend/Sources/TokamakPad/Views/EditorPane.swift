@@ -42,7 +42,7 @@ struct EditorPane: View {
     }
 
     var body: some View {
-        HTML("div", ["class": "editor-pane"]) {
+        HTML("div", ["id": "editor-pane"]) {
             RunButton(action: state.onRun)
                 .id("run-button")
         }

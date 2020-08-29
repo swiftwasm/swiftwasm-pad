@@ -32,6 +32,7 @@ struct ConsolePane: View {
             ForEach(collector.logStorage) { line in
                 HTML("span", content: line.value)
             }
+            .id("log-list")
         }
         .padding(24.0)
         .background(Color(hex: "2b3e50")!)
