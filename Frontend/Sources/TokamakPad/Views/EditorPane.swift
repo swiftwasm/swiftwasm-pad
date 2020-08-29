@@ -30,7 +30,7 @@ struct EditorPane: View {
         var cancellables: [AnyCancellable] = []
     }
     
-    @StateObject private var state: State
+    @StateObject private var state: State 
     
     init(content: Binding<String>) {
         self._state = StateObject(
@@ -42,6 +42,9 @@ struct EditorPane: View {
         HTML("div", ["class": "editor-pane"]) {
             RunButton()
                 .id("run-button")
+        }
+        .bindKey(.ctrlAndEnter) {
+            print("Press cmd-enter")
         }
         ._domRef($state.observedNodeRef)
         ._onMount { mountCodeMirror() }
