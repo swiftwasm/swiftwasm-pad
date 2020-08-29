@@ -6,4 +6,7 @@ import CombineShim
 
 class EventBus {
     static let mounted = PassthroughSubject<Void, Never>()
+    static let stdout = PassthroughSubject<String, Never>()
+    static let stderr = PassthroughSubject<String, Never>()
+    static let flush = PassthroughSubject<Void, Never>()
 }

@@ -65,7 +65,6 @@ struct EditorPane: View {
             "tabSize": 2,
             "lineWrapping": true,
             "indentUnit": 2,
-            "cursorHeight": 0.85,
             "mode": "swift",
             "theme": "lucario",
             "value": state.textBinding.wrappedValue,

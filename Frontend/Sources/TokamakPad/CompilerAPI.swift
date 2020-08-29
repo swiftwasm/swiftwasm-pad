@@ -21,7 +21,7 @@ class CompilerAPI {
                 "Content-Type": "application/json"
             ],
         ]
-        let promise = postFetch("http://dev-lambda.swiftwasm.org:8090/invoke", options: options)
+        let promise = fetch("http://dev-lambda.swiftwasm.org:8090/invoke", options: options)
 
         return futurefy(promise)
             .flatMap { response -> Future<JSValue, JSError> in

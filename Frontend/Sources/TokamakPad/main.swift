@@ -4,33 +4,31 @@ import JavaScriptKit
 
 struct Editor: View {
     @State var code: String
+    @EnvironmentObject
+    var runner: Runner
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             EditorPane(content: $code) {
-                print("Run: " + code)
+                runner.run(code)
             }
-            Color.white
-            Color.white
+//            OutputPane()
+            ConsolePane()
         }
         .id("editor-view")
     }
 }
 
 let initialTemplate = """
-import TokamakDOM
-
-struct ContentView: View {
-  var body: some View {
-    Text("Hello, world")
-  }
+for i in 0..<100 {
+    print("Hello, world!")
 }
 """
 
 struct EditorApp: App {
     let runner = Runner(compilerAPI: CompilerAPI())
     var body: some Scene {
-        WindowGroup("Counter Demo") {
+        WindowGroup("Tokamak Pad") {
             VStack {
                 NavigationHeader()
                 Editor(code: initialTemplate)
@@ -42,4 +40,11 @@ struct EditorApp: App {
 }
 
 EditorApp.main()
+WebAssembly.installHook { (fd, buffer) in
+    switch fd {
+    case 1: EventBus.stdout.send(buffer)
+    case 2: EventBus.stderr.send(buffer)
+    default: break
+    }
+}
 EventBus.mounted.send()

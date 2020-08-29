@@ -6,23 +6,21 @@ global._triggerDebugger = () => {
     debugger
 };
 
+// outputHook(descriptor: number, buffer: string): void
+let outputHook = null
+
 window.swiftExports = {
   CodeMirror: CodeMirror,
+  installHook: (hookFn) => {
+    outputHook = hookFn
+  },
   execWasm: async (arrayBuffer) => {
     const wasmFs = new WasmFs();
-    const outputArea = document.getElementById("output-area")
 
     const originalWriteSync = wasmFs.fs.writeSync;
     wasmFs.fs.writeSync = (fd, buffer, offset, length, position) => {
       const text = new TextDecoder("utf-8").decode(buffer);
-      switch (fd) {
-      case 1:
-        console.log(text);
-        break;
-      case 2:
-        console.error(text);
-        break;
-      }
+      outputHook(fd, text)
       return originalWriteSync(fd, buffer, offset, length, position);
     };
 
