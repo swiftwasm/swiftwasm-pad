@@ -14,7 +14,8 @@ struct Editor: View {
             }
             DynamicHTML("div", ["style": "flex-basis: 6px;"])
             VStack {
-                Color.blue
+                PreviewPane()
+                DynamicHTML("div", ["style": "flex-basis: 6px;"])
                 ConsolePane()
             }
             .id("left-pane")

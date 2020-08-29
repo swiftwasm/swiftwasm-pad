@@ -88,3 +88,8 @@ body {
 #log-list {
     height: calc(100% - 48px) !important;
 }
+
+#preview-pane {
+    flex-basis: calc(50% - 3px);
+    width: 100%;
+}

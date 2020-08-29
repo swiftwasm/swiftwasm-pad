@@ -36,7 +36,6 @@ struct ConsolePane: View {
         }
         .padding(24.0)
         .background(Color(hex: "2b3e50")!)
-        .padding(.leading)
         .id("console-pane")
     }
 }
