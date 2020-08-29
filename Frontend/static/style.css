@@ -90,6 +90,6 @@ body {
 }
 
 #preview-pane {
-    flex-basis: calc(50% - 3px);
+    flex-basis: calc(50% - 3px - 48px);
     width: 100%;
 }
