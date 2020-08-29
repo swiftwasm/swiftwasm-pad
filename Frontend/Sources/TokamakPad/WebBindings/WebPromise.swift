@@ -40,7 +40,7 @@ public class Promise: JSValueConvertible {
     }
 }
 
-import OpenCombine
+import CombineShim
 
 struct JSError: Error {
     let value: JSValue

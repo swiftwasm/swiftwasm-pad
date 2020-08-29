@@ -1,6 +1,14 @@
-import OpenCombine
+import CombineShim
 import JavaScriptKit
 
+struct MessageError: Error {
+    let message: String
+    let line: UInt
+    init(message: String, line: UInt = #line) {
+        self.message = message
+        self.line = line
+    }
+}
 
 class CompilerAPI {
     func compile(code: String) -> AnyPublisher<JSObjectRef, Error> {

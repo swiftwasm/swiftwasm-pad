@@ -1,5 +1,5 @@
 import JavaScriptKit
-import OpenCombine
+import CombineShim
 
 class WebAssembly {
     private static let Uint8Array = JSObjectRef.global.Uint8Array.function!
