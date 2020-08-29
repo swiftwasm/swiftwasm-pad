@@ -10,9 +10,8 @@ struct Editor: View {
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             EditorPane(content: $code)
-            Button("Run") {
-                runner.run(code)
-            }
+            Color.white
+            Color.white
         }
         .id("editor-view")
     }

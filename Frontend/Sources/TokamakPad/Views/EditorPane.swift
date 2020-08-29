@@ -39,9 +39,12 @@ struct EditorPane: View {
     }
 
     var body: some View {
-        HTML("div", ["class": "editor-pane"])
-            ._domRef($state.observedNodeRef)
-            ._onMount { mountCodeMirror() }
+        HTML("div", ["class": "editor-pane"]) {
+            RunButton()
+                .id("run-button")
+        }
+        ._domRef($state.observedNodeRef)
+        ._onMount { mountCodeMirror() }
     }
     
     func mountCodeMirror() {

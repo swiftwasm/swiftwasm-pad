@@ -29,9 +29,38 @@ body {
 .editor-pane {
     width: 50%;
     margin-left: 16px;
+    position: relative;
 }
 
 .CodeMirror {
     height: 100%;
     font-family: "Roboto Mono",monospace;
+}
+
+#run-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 8px 24px 0 0;
+    z-index: 5;
+    background-color: #168afd;
+    color: white;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    align-items: center;
+    box-sizing: border-box;
+    min-width: 64px;
+    height: 36px;
+    overflow: hidden;
+    vertical-align: middle;
+    border-radius: 4px;
+}
+
+#run-button:hover {
+    opacity: .8;
+}
+
+#run-button:disabled {
+    background: #ccc;
 }
