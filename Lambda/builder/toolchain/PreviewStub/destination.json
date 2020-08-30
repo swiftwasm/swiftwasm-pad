@@ -1,0 +1,17 @@
+{
+  "extra-cc-flags" : [
+    "-I",
+    "/home/work/toolchain/swift-wasm-5.3-SNAPSHOT-2020-08-28-a/usr/lib/swift/wasi/wasm32"
+  ],
+  "extra-cpp-flags" : [],
+  "target" : "wasm32-unknown-wasi",
+  "version" : 1,
+  "extra-swiftc-flags" : [
+    "-I",
+    "/home/work/toolchain/swift-wasm-5.3-SNAPSHOT-2020-08-28-a/usr/lib/swift/wasi/wasm32",
+    "-Xlinker",
+    "-luuid"
+  ],
+  "sdk" : "/home/work/toolchain/swift-wasm-5.3-SNAPSHOT-2020-08-28-a/usr/share/wasi-syroot",
+  "toolchain-bin-dir" : "/home/work/toolchain/swift-wasm-5.3-SNAPSHOT-2020-08-28-a/usr/bin"
+}
