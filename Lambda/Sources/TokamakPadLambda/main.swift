@@ -176,7 +176,7 @@ struct Toolchain {
 
 let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 let swiftc = Lambda.env("LAMBDA_SWIFTC").map(URL.init(fileURLWithPath: ))
-    ?? cwd.appendingPathComponent("bin/swiftc")
+    ?? cwd.appendingPathComponent("toolchain/usr/bin/swiftc")
 let previewStub = Lambda.env("LAMBDA_PREVIEW_STUB_PACKAGE").map(URL.init(fileURLWithPath: ))
     ?? cwd.appendingPathComponent("PreviewStub")
 
@@ -186,15 +186,15 @@ let toolchain = Toolchain(
     previewStub: PreviewStub(root: previewStub)
 )
 
-func mockResponse() throws -> ByteBuffer {
-    let tempOutput = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent()
-        .deletingLastPathComponent()
-        .deletingLastPathComponent()
-        .appendingPathComponent("CounterDemo.wasm")
-    let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
-    return bytes
-}
+//func mockResponse() throws -> ByteBuffer {
+//    let tempOutput = URL(fileURLWithPath: #filePath)
+//        .deletingLastPathComponent()
+//        .deletingLastPathComponent()
+//        .deletingLastPathComponent()
+//        .appendingPathComponent("CounterDemo.wasm")
+//    let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
+//    return bytes
+//}
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result {

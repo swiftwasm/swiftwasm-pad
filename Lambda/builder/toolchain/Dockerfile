@@ -11,3 +11,4 @@ ENV CROSS_SWIFT="/home/work/toolchain/$SWIFT_TAG/usr/bin/swift"
 COPY PreviewStub /home/work/PreviewStub
 WORKDIR /home/work/PreviewStub
 RUN $CROSS_SWIFT build --destination destination.json
+RUN rm -rf .build/wasm32-unknown-wasi/debug/index
