@@ -18,7 +18,7 @@ struct Editor: View {
                 DynamicHTML("div", ["style": "flex-basis: 6px;"])
                 ConsolePane()
             }
-            .id("left-pane")
+            .id("right-pane")
         }
         .id("panels")
     }

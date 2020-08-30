@@ -3,24 +3,25 @@
 .CodeMirror {
     height: 100%;
     font-family: "Roboto Mono",monospace;
+
+    background: inherit;
+    color: inherit;
+    box-shadow: none;
+    line-height: 20px;
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 .CodeMirror-scroll {
-    overflow: scroll !important; /* Things will break if this is overridden */
-    /* 30px is the magic margin used to hide the element's real scrollbars */
-    /* See overflow: hidden in .CodeMirror */
-    margin: 24px;
-    height: 100%;
-    outline: none; /* Prevent dragging from highlighting the element */
-    position: relative;
+    padding: 24px;
 }
-
-
 
 body {
     font-size: 14px;
     font-family: "Roboto Mono",monospace;
-    font-weight: 400
+    font-weight: 400;
 }
 
 #root-stack {
@@ -38,6 +39,8 @@ body {
 #editor-pane {
     flex-basis: calc(50% - 3px);
     position: relative;
+    /* 50px is magic number used by CodeMirror to hide the element's real scrollbars */
+    height: calc(100% - 50px);
 }
 
 #run-button {
@@ -68,7 +71,7 @@ body {
     background: #ccc;
 }
 
-#left-pane {
+#right-pane {
     display: flex;
     flex-basis: calc(50% - 3px);
     height: 100%;
