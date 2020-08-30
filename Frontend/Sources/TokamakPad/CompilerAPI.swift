@@ -30,7 +30,8 @@ class CompilerAPI {
             }
             .map { $0.object! }
             .mapError { error -> Error in
-                MessageError(message: error.value.object!.message.string!)
+                console.log(error.value)
+                return MessageError(message: error.value.object!.message.string!)
             }
             .eraseToAnyPublisher()
             

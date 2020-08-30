@@ -92,4 +92,18 @@ body {
 #preview-pane {
     flex-basis: calc(50% - 3px - 48px);
     width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Workaround */
+#preview-pane > ._tokamak-stack {
+    margin: 24px;
+    height: 100%;
+}
+
+#preview-host {
+    width: 100%;
+    margin-top: 24px;
+    height: calc(100% - 24px);
 }

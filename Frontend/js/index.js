@@ -15,6 +15,7 @@ window.swiftExports = {
     outputHook = hookFn
   },
   execWasm: async (arrayBuffer) => {
+    const swift = new SwiftRuntime();
     const wasmFs = new WasmFs();
 
     const originalWriteSync = wasmFs.fs.writeSync;
@@ -41,10 +42,12 @@ window.swiftExports = {
     const { instance } = await WebAssembly.instantiate(wasmBytes, {
       wasi_snapshot_preview1: wasi.wasiImport,
       wasi_unstable: wasi.wasiImport,
+      javascript_kit: swift.importObjects(),
       ...importObject,
     });
 
     importObject.instance = instance
+    swift.setInstance(instance);
     wasi.start(instance);
   }
 }
