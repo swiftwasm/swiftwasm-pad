@@ -23,7 +23,7 @@ struct PreviewPane: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Preview")
+            Text("Preview").foregroundColor(.white)
             HTML("div", ["id": "preview-host"])
                 ._domRef($previewer.previewHost)
         }

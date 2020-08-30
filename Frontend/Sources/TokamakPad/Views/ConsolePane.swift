@@ -30,6 +30,7 @@ struct ConsolePane: View {
     var body: some View {
         ScrollView {
             Text("Console\n\n").bold()
+                .foregroundColor(.white)
             ForEach(collector.logStorage) { line in
                 HTML("span", content: line.value)
             }

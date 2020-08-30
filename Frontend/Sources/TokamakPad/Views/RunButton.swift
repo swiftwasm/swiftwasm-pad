@@ -13,7 +13,7 @@ struct RunButton: View {
             "id": "run-button",
             "disabled": runner.isRunning ? "true" : "",
         ], listeners: ["click": onClick]) {
-            HTML("span") { Text("RUN") }
+            HTML("span") { Text("RUN").foregroundColor(.white) }
         }
     }
     
