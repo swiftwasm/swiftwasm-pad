@@ -45,6 +45,7 @@ import CombineShim
 struct JSError: Error {
     let value: JSValue
     init(value: JSValue) {
+        console.error(value)
         self.value = value
     }
 }

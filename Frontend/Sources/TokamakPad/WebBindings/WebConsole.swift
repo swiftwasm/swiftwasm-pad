@@ -5,6 +5,9 @@ struct Console {
     func log(_ v: JSValueConvertible) {
         _ = console.log!(v)
     }
+    func error(_ v: JSValueConvertible) {
+        _ = console.error!(v)
+    }
 }
 
 let console = Console()
