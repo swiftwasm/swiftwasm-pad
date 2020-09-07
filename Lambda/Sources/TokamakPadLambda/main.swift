@@ -149,8 +149,7 @@ struct Toolchain {
             "-emit-object",
             "-", "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
-            "-sdk", sysroot.path,
-            "-Osize", "-whole-module-optimization"
+            "-sdk", sysroot.path
         ]
 
         arguments += previewStub.includes.flatMap {
@@ -205,7 +204,6 @@ let toolchain = Toolchain(
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result {
-//        try toolchain.emitTokamakExecutable(for: request.mainCode)
         try toolchain.emitObject(for: request.mainCode)
     }
     completion(result)
