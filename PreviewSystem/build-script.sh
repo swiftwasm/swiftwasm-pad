@@ -22,25 +22,32 @@
 
 set -eu
 preview_dir="$(cd "$(dirname $0)" && pwd)"
+toolchain="$preview_dir/.toolchain/$(cat $preview_dir/../.swift-version)"
 build_dir="$preview_dir/distribution"
 stub_package_build_dir="$build_dir/PreviewStub"
 build_config=debug
 
 echo "-------------------------------------------------------------------------"
-echo "preparing docker build image for preview stub package"
+echo "install toolchain"
 echo "-------------------------------------------------------------------------"
-docker build $preview_dir -t tokamak-pad-preview-stub-builder
+
+"$preview_dir/install-toolchain.sh"
 
 echo "-------------------------------------------------------------------------"
-echo "building PreviewStub pakcage from Docker image"
+echo "building PreviewStub pakcage"
 echo "-------------------------------------------------------------------------"
 
 rm -rf $stub_package_build_dir
 
 # Build stub package for WebAssembly target
-docker run --rm -v "$preview_dir":/workspace -w /workspace \
-  tokamak-pad-preview-stub-builder \
-  bash -cl "swift build --destination destination.json -c $build_config"
+SWIFTPM_CUSTOM_BINDIR=$toolchain/usr/bin \
+  $toolchain/usr/bin/swift build \
+    --triple wasm32-unknown-wasi \
+    -c $build_config \
+    --sdk "$toolchain/usr/share/wasi-sysroot" \
+    -Xcc -I"$toolchain/usr/lib/swift/wasi/wasm32" \
+    -Xswiftc -I"$toolchain/usr/lib/swift/wasi/wasm32"
+
 
 mkdir -p $stub_package_build_dir
 cp -r $preview_dir/.build/wasm32-unknown-wasi/$build_config $stub_package_build_dir/wasm32-unknown-wasi
