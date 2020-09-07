@@ -2,7 +2,14 @@ import AWSLambdaRuntime
 import NIO
 
 struct Request: Codable {
-  let mainCode: String
+    let mainCode: String
+    let shell: String?
+}
+
+struct Response: Codable {
+    let stdout: String
+    let stderr: String
+    let exitCode: Int32
 }
 
 struct CompilerOutputHandler<In: Decodable>: LambdaHandler {
@@ -145,9 +152,11 @@ struct Toolchain {
     }
     
     func emitObject(for code: String) throws -> ByteBuffer {
+        let tempInput = tempDirectory.appendingPathComponent("main.swift")
+
         var arguments = [
             "-emit-object",
-            "-", "-o", tempOutput.path,
+            tempInput.path, "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
             "-sdk", sysroot.path
         ]
@@ -163,14 +172,13 @@ struct Toolchain {
         guard let inputData = code.data(using: .utf8) else {
             throw Error.failedToEncodeCode
         }
-        
+        try! inputData.write(to: tempInput)
         let process = Process()
         process.launchPath = swiftCompiler.path
         process.arguments = arguments
         let stdinPipe = Pipe()
         stdinPipe.fileHandleForWriting.writeabilityHandler = { handle in
             handle.write(inputData)
-            handle.closeFile()
         }
         process.standardInput = stdinPipe
         process.launch()
@@ -191,16 +199,6 @@ let toolchain = Toolchain(
     swiftCompiler: swiftc,
     previewStub: PreviewStub(root: previewStub)
 )
-
-//func mockResponse() throws -> ByteBuffer {
-//    let tempOutput = URL(fileURLWithPath: #filePath)
-//        .deletingLastPathComponent()
-//        .deletingLastPathComponent()
-//        .deletingLastPathComponent()
-//        .appendingPathComponent("CounterDemo.wasm")
-//    let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
-//    return bytes
-//}
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result {

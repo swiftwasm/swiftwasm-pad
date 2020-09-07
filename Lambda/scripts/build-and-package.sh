@@ -1,3 +1,5 @@
+set -eu
+
 executable=$1
 workspace="$(cd "$(dirname $0)/../" && pwd)"
 builder_dir="$workspace/builder"

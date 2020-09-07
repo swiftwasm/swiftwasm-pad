@@ -24,6 +24,9 @@ cp ".build/release/$executable" "$target/"
 # add the target deps based on ldd
 ldd ".build/release/$executable" | grep swift | awk '{print $3}' | xargs cp -Lv -t "$target"
 
+# add swift compiler deps based on ldd
+ldd "/home/work/toolchain/usr/bin/swiftc" | awk '{print $3}' | xargs cp -Lv -t "$target"
+
 # copy cross-compile toolchain
 cp -r "/home/work/toolchain" "$target/"
 # copy preview stub package
@@ -33,4 +36,4 @@ cd "$target"
 ln -s "$executable" "bootstrap"
 
 
-zip -r --symlinks lambda.zip .
+zip -q -r --symlinks lambda.zip .
