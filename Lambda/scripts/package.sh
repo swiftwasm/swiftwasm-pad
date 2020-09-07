@@ -30,7 +30,7 @@ ldd "/home/work/toolchain/usr/bin/swiftc" | awk '{print $3}' | xargs cp -Lv -t "
 # copy cross-compile toolchain
 cp -r "/home/work/toolchain" "$target/"
 # copy preview stub package
-cp -r "distribution/PreviewStub" "$target/"
+cp -r "../PreviewSystem/distribution/PreviewStub" "$target/"
 
 cd "$target"
 ln -s "$executable" "bootstrap"

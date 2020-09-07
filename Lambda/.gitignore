@@ -3,5 +3,3 @@
 /Packages
 /*.xcodeproj
 xcuserdata/
-/distribution/*
-!/distribution/.gitkeep
