@@ -6,9 +6,4 @@ RUN apt update && apt install wget -y
 RUN wget https://github.com/swiftwasm/swift/releases/download/$SWIFT_TAG/$SWIFT_TAG-linux.tar.gz \
   && tar xfzv $SWIFT_TAG-linux.tar.gz
 
-ENV CROSS_SWIFT="/home/work/toolchain/$SWIFT_TAG/usr/bin/swift"
-
-COPY PreviewStub /home/work/PreviewStub
-WORKDIR /home/work/PreviewStub
-RUN $CROSS_SWIFT build --destination destination.json
-RUN rm -rf .build/wasm32-unknown-wasi/debug/index
+ENV PATH="/home/work/toolchain/$SWIFT_TAG/usr/bin:$PATH"

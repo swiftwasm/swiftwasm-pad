@@ -2,7 +2,15 @@ set -eu
 
 executable=$1
 workspace="$(cd "$(dirname $0)/../" && pwd)"
-builder_dir="$workspace/builder"
+scripts="$workspace/scripts"
+preview_stub_dir="$scripts/preview-stub"
+builder_dir="$scripts/builder"
+
+echo "-------------------------------------------------------------------------"
+echo "preparing docker build image"
+echo "-------------------------------------------------------------------------"
+"$preview_stub_dir/build-preview-stub.sh"
+echo "done"
 
 echo "-------------------------------------------------------------------------"
 echo "preparing docker build image"
