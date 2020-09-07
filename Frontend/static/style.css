@@ -92,6 +92,11 @@ body {
     height: calc(100% - 48px) !important;
 }
 
+/* Workaround */
+#log-list._tokamak-stack {
+    align-items: flex-start !important;
+}
+
 #preview-pane {
     flex-basis: calc(50% - 3px - 48px);
     width: 100%;

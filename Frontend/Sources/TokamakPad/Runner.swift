@@ -73,7 +73,13 @@ class Runner: ObservableObject {
 
         let objects = Array(inputs.keys) + [sharedLibrary]
         let writer = OutputWriter()
-        try performLinker(objects, outputStream: writer, exports: [])
+        let exports = [
+            "swjs_call_host_function",
+            "swjs_prepare_host_function_call",
+            "swjs_cleanup_host_function_call",
+            "swjs_library_version",
+        ]
+        try performLinker(objects, outputStream: writer, exports: exports)
 
         let createArrayBufferFromSwiftArray = JSObjectRef.global.createArrayBufferFromSwiftArray.function!
         return writer.bytes.withUnsafeBufferPointer { bufferPtr in
