@@ -3,20 +3,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "TokamakPadLambda",
+    name: "CompileSwiftWasm",
     platforms: [.macOS(.v10_15)],
     products: [
-        .executable(name: "TokamakPadLambda", targets: ["TokamakPadLambda"]),
+        .executable(name: "CompileSwiftWasm", targets: ["CompileSwiftWasm"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "0.1.0"),
     ],
     targets: [
-        .target(name: "TokamakPadLambda", dependencies: [
+        .target(name: "CompileSwiftWasm", dependencies: [
             .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
         ]),
-        .testTarget(
-            name: "TokamakPadLambdaTests",
-            dependencies: ["TokamakPadLambda"]),
     ]
 )
