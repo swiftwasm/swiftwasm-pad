@@ -1,0 +1,18 @@
+name: Build
+on:
+  push: {}
+jobs:
+  run:
+    runs-on: macOS-latest
+    name: Build project
+    steps:
+    - uses: actions/checkout@master
+    - name: Select latest Xcode
+      run: sudo xcode-select --switch /Applications/Xcode_12_beta.app/Contents/Developer/
+    - name: Build PreviewSystem
+      run: ./PreviewSystem/build-script.sh
+    - name: Upload PreviewSystem artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: PreviewSystem
+        path: PreviewSystem/distribution
