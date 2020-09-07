@@ -41,9 +41,10 @@ rm -rf $stub_package_build_dir
 
 # Build stub package for WebAssembly target
 SWIFTPM_CUSTOM_BINDIR=$toolchain/usr/bin \
-  $toolchain/usr/bin/swift build \
+  "$toolchain/usr/bin/swift" build \
+    --package-path "$preview_dir" \
     --triple wasm32-unknown-wasi \
-    -c $build_config \
+    -c "$build_config" \
     --sdk "$toolchain/usr/share/wasi-sysroot" \
     -Xcc -I"$toolchain/usr/lib/swift/wasi/wasm32" \
     -Xswiftc -I"$toolchain/usr/lib/swift/wasi/wasm32"
