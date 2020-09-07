@@ -1,9 +1,9 @@
 // swift-tools-version:5.3
 import PackageDescription
 let package = Package(
-    name: "TokamakPad",
+    name: "SwiftWasmPad",
     products: [
-        .executable(name: "TokamakPad", targets: ["TokamakPad"]),
+        .executable(name: "SwiftWasmPad", targets: ["SwiftWasmPad"]),
     ],
     dependencies: [
         .package(name: "JavaScriptKit", url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.5.0"),
@@ -12,7 +12,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "TokamakPad",
+            name: "SwiftWasmPad",
             dependencies: [
                 .product(name: "JavaScriptKit", package: "JavaScriptKit"),
                 .product(name: "TokamakShim", package: "Tokamak"),

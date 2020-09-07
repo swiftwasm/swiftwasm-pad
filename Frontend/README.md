@@ -1,3 +1,3 @@
-# TokamakPad
+# SwiftWasmPad
 
 A description of this package.

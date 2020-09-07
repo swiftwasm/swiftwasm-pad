@@ -1,5 +1,5 @@
 {
-  "name": "TokamakPad",
+  "name": "swiftwasm-pad",
   "dependencies": {
     "@wasmer/wasi": "^0.9.1",
     "@wasmer/wasmfs": "^0.9.1",

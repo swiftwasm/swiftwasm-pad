@@ -23,13 +23,14 @@ module.exports = (mode) => {
     plugins: [
       new SwiftWebpackPlugin({
         packageDirectory: __dirname,
-        target: 'TokamakPad',
+        target: 'SwiftWasmPad',
         dist: outputPath,
         config: mode == 'development' ? 'debug' : 'release'
       }),
       new CopyPlugin(
         [
           { from: staticPath, to: outputPath },
+          { from: path.join(__dirname, "../PreviewSystem/distribution/library.so.wasm"), to: outputPath },
         ],
       ),
     ],

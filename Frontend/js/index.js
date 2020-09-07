@@ -97,7 +97,7 @@ const startWasiTask = async () => {
 
   window.debugWasi = wasi
 
-  const response = await fetch("TokamakPad.wasm");
+  const response = await fetch("SwiftWasmPad.wasm");
   const importObject = {
     wasi_snapshot_preview1: wasi.wasiImport,
     javascript_kit: swift.importObjects(),

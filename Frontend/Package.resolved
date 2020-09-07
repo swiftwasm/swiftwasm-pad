@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "OpenCombine",
+        "repositoryURL": "https://github.com/MaxDesiatov/OpenCombine.git",
+        "state": {
+          "branch": null,
+          "revision": "29ab27e488a1c9afef217b1435b3293d4a77b1ae",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "Runtime",
         "repositoryURL": "https://github.com/MaxDesiatov/Runtime.git",
         "state": {
