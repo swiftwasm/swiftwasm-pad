@@ -18,3 +18,13 @@ jobs:
         path: PreviewSystem/distribution
     - name: Build CompileAPI
       run: swift build --package-path CompileAPI
+    - name: Build Frontend
+      working-directory: Frontend
+      run: |
+        npm install
+        npm run build
+    - name: Upload Frontend artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Frontend
+        path: Frontend/dist
