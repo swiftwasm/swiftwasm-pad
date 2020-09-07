@@ -18,6 +18,7 @@ module.exports = (mode) => {
       inline: true,
       watchContentBase: true,
       contentBase: [outputPath],
+      host: mode == 'development' ? 'dev-pad.swiftwasm.org' : 'pad.swiftwasm.org',
     },
     plugins: [
       new SwiftWebpackPlugin({
@@ -33,8 +34,5 @@ module.exports = (mode) => {
       ),
     ],
   };
-  if (mode == 'development') {
-    config.devServer.host = "dev-pad.swiftwasm.org"
-  }
   return config;
 };
