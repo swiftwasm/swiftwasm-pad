@@ -16,3 +16,5 @@ jobs:
       with:
         name: PreviewSystem
         path: PreviewSystem/distribution
+    - name: Build CompileAPI
+      run: swift build --package-path CompileAPI
