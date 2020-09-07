@@ -1,5 +1,5 @@
 import TokamakDOM
-import OpenCombine
+import CombineShim
 import JavaScriptKit
 
 struct Editor: View {

@@ -1,6 +1,7 @@
 import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
+import * as path from "path-browserify"
 
 global._triggerDebugger = () => {
     debugger
@@ -72,13 +73,29 @@ const startWasiTask = async () => {
     return originalWriteSync(fd, buffer, offset, length, position);
   };
 
+  wasmFs.fs.mkdirSync("/tmp", 0o777);
+  window.sharedFs = wasmFs.fs
+
+  let theInstance = null;
+  window.createArrayBufferFromSwiftArray = (ptr, length) => {
+    const memory = theInstance.exports.memory;
+    const memBuffer = new Uint8Array(memory.buffer);
+    return memBuffer.slice(ptr, ptr + length);
+  }
+
   let wasi = new WASI({
     args: [], env: {},
+    preopenDirectories: {
+      "/tmp": "/tmp"
+    },
     bindings: {
       ...WASI.defaultBindings,
-      fs: wasmFs.fs
+      fs: wasmFs.fs,
+      path: path,
     }
   });
+
+  window.debugWasi = wasi
 
   const response = await fetch("TokamakPad.wasm");
   const importObject = {
@@ -96,6 +113,7 @@ const startWasiTask = async () => {
     }
   })();
 
+  theInstance = instance;
   swift.setInstance(instance);
   wasi.start(instance);
 };

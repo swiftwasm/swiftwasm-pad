@@ -8,13 +8,15 @@ let package = Package(
     dependencies: [
         .package(name: "JavaScriptKit", url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.5.0"),
         .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", from: "0.3.0"),
+        .package(name: "ChibiLink", url: "https://github.com/kateinoigakukun/chibi-link", .branch("master")),
     ],
     targets: [
         .target(
             name: "TokamakPad",
             dependencies: [
                 .product(name: "JavaScriptKit", package: "JavaScriptKit"),
-                .product(name: "TokamakShim", package: "Tokamak")
+                .product(name: "TokamakShim", package: "Tokamak"),
+                .product(name: "ChibiLink", package: "ChibiLink"),
             ]),
     ]
 )

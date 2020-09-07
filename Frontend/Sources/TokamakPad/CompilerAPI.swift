@@ -36,5 +36,20 @@ class CompilerAPI {
             .eraseToAnyPublisher()
             
     }
+    
+    func sharedLibrary() -> AnyPublisher<JSObjectRef, Error> {
+        let promise = fetch("library.so.wasm", options: [:])
+        return futurefy(promise)
+            .flatMap { response -> Future<JSValue, JSError> in
+                let promise = response.object!.arrayBuffer!()
+                return futurefy(Promise(promise)!)
+            }
+            .map { $0.object! }
+            .mapError { error -> Error in
+                console.log(error.value)
+                return MessageError(message: error.value.object!.message.string!)
+            }
+            .eraseToAnyPublisher()
+    }
 }
 
