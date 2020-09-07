@@ -52,3 +52,8 @@ rm -f $output
   --allow-undefined \
   --relocatable \
   -o $output
+
+# Strip debug info
+
+swift run --package-path $tool strip-debug $output ${output}-tmp
+mv ${output}-tmp $output
