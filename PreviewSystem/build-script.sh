@@ -8,6 +8,7 @@
 ##
 ## The output artifact structure is:
 ##  distribution
+##  ├── library.so.wasm
 ##  └── PreviewStub
 ##      ├── checkouts
 ##      │   ├── JavaScriptKit
@@ -22,9 +23,11 @@
 
 set -eu
 preview_dir="$(cd "$(dirname $0)" && pwd)"
+tools_dir="$preview_dir/Tools"
 toolchain="$preview_dir/.toolchain/$(cat $preview_dir/../.swift-version)"
 build_dir="$preview_dir/distribution"
 stub_package_build_dir="$build_dir/PreviewStub"
+shared_object_library="$build_dir/library.so.wasm"
 build_config=debug
 
 echo "-------------------------------------------------------------------------"
@@ -75,3 +78,49 @@ module _CJavaScriptKit {
     export *
 }
 EOS
+
+echo "-------------------------------------------------------------------------"
+echo "linking shared object library"
+echo "-------------------------------------------------------------------------"
+
+link-shared-object-library() {
+  local link_objects=$(
+    cat "$stub_package_build_dir/wasm32-unknown-wasi/PreviewStub.product/Objects.LinkFileList" \
+      | grep -v "main.swift.o"
+  )
+
+  local workdir=$(mktemp -d)
+
+  # Extract object files from libswiftSwiftOnoneSupport.a to force link
+  mkdir -p $workdir/swiftSwiftOnoneSupport
+  pushd $workdir/swiftSwiftOnoneSupport > /dev/null
+  "$toolchain/usr/bin/llvm-ar" x $toolchain/usr/lib/swift_static/wasi/libswiftSwiftOnoneSupport.a
+  popd > /dev/null
+
+  "$toolchain/usr/bin/wasm-ld" \
+    $link_objects \
+    $toolchain/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1.o \
+    $toolchain/usr/lib/swift_static/wasi/wasm32/swiftrt.o \
+    $toolchain/usr/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
+    $workdir/swiftSwiftOnoneSupport/*.o \
+    -L$toolchain/usr/lib/swift_static/wasi \
+    -L$toolchain/usr/share/wasi-sysroot/usr/lib/swift \
+    -L$toolchain/usr/share/wasi-sysroot/lib/wasm32-wasi \
+    -lswiftCore -lswiftImageInspectionShared -lswiftWasiPthread \
+    -licuuc -licudata -ldl -lc++ -lc++abi -lc -lm -lwasi-emulated-mman \
+    --error-limit=0 \
+    --no-gc-sections \
+    --no-threads \
+    --allow-undefined \
+    --relocatable \
+    -o "$shared_object_library"
+}
+
+link-shared-object-library
+
+echo "-------------------------------------------------------------------------"
+echo "stripping debug info from shared object library"
+echo "-------------------------------------------------------------------------"
+
+swift run --package-path $tools_dir strip-debug $shared_object_library ${shared_object_library}-tmp
+mv ${shared_object_library}-tmp $shared_object_library
