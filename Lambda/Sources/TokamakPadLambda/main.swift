@@ -145,31 +145,38 @@ struct Toolchain {
     }
     
     func emitObject(for code: String) throws -> ByteBuffer {
-        let arguments = [
-//            "-emit-object",
-            "-", "-o", tempDirectory.path,
+        var arguments = [
+            "-emit-object",
+            "-", "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
             "-sdk", sysroot.path,
-            "-Osize", "-whole-module-optimization",
-            "-v"
+            "-Osize", "-whole-module-optimization"
         ]
+
+        arguments += previewStub.includes.flatMap {
+            ["-I", $0.path]
+        }
+        
+        arguments += previewStub.modulemaps.flatMap {
+            ["-Xcc", "-fmodule-map-file=\($0.path)"]
+        }
 
         guard let inputData = code.data(using: .utf8) else {
             throw Error.failedToEncodeCode
         }
-
+        
         let process = Process()
         process.launchPath = swiftCompiler.path
         process.arguments = arguments
         let stdinPipe = Pipe()
         stdinPipe.fileHandleForWriting.writeabilityHandler = { handle in
             handle.write(inputData)
-            try! handle.close()
+            handle.closeFile()
         }
         process.standardInput = stdinPipe
         process.launch()
         process.waitUntilExit()
-        let bytes = try ByteBuffer(data: Data(contentsOf: tempDirectory))
+        let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
         return bytes
     }
 }
@@ -198,8 +205,8 @@ let toolchain = Toolchain(
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result {
-        try toolchain.emitTokamakExecutable(for: request.mainCode)
-//        try toolchain.emitObject(for: request.mainCode)
+//        try toolchain.emitTokamakExecutable(for: request.mainCode)
+        try toolchain.emitObject(for: request.mainCode)
     }
     completion(result)
 }
