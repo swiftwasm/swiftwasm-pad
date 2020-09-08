@@ -45,7 +45,7 @@ const startWasiTask = async () => {
     }
   });
 
-  const i64Polyfill = wrapI64Polyfill(wasi);
+  const i64Polyfill = wrapI64Polyfill(wasi.wasiImport);
 
   window.swiftExports = new SwiftWasmPadExport(wasmFs.fs);
 

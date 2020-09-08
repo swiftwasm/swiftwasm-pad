@@ -1,84 +1,97 @@
-#include <stddef.h>
 #include <stdint.h>
 
-typedef uint16_t __wasi_errno_t;
-typedef int __wasi_fd_t;
-typedef uint32_t __wasi_lookupflags_t;
-typedef uint16_t __wasi_oflags_t;
-typedef uint64_t __wasi_rights_t;
+uint32_t i64_polyfill___wasi_clock_time_get(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint32_t arg3
+) __attribute__((
+    __import_module__("i64_polyfill"),
+    __import_name__("clock_time_get"),
+));
+uint32_t __wasi_clock_time_get(
+    uint32_t arg0,
+    uint64_t arg1,
+    uint32_t arg2
+) {
+    uint32_t arg1_head = (arg1 & 0xffff0000) >> 4;
+    uint32_t arg1_tail = (arg1 & 0x0000ffff);
+    return i64_polyfill___wasi_clock_time_get(arg0, arg1_head, arg1_tail, arg2);
+}
 
-typedef uint32_t __wasi_rights_head_t;
-typedef uint32_t __wasi_rights_tail_t;
-
-typedef uint16_t __wasi_fdflags_t;
-
-__wasi_errno_t __wasi_i64_polyfill_path_open(
-    __wasi_fd_t fd,
-
-    /**
-     * Flags determining the method of how the path is resolved.
-     */
-    __wasi_lookupflags_t dirflags,
-
-    /**
-     * The relative path of the file or directory to open, relative to the
-     * `path_open::fd` directory.
-     */
-    const char *path,
-
-    /**
-     * The length of the buffer pointed to by `path`.
-     */
-    size_t path_len,
-
-    /**
-     * The method by which to open the file.
-     */
-    __wasi_oflags_t oflags,
-
-    /**
-     * The initial rights of the newly created file descriptor. The
-     * implementation is allowed to return a file descriptor with fewer rights
-     * than specified, if and only if those rights do not apply to the type of
-     * file being opened.
-     * The *base* rights are rights that will apply to operations using the file
-     * descriptor itself, while the *inheriting* rights are rights that apply to
-     * file descriptors derived from it.
-     */
-    __wasi_rights_head_t fs_rights_base_head,
-    __wasi_rights_tail_t fs_rights_base_tail,
-    __wasi_rights_head_t fs_rights_inherting_head,
-    __wasi_rights_tail_t fs_rights_inherting_tail,
-
-    __wasi_fdflags_t fdflags,
-
-    /**
-     * The file descriptor of the file that has been opened.
-     */
-    __wasi_fd_t *opened_fd
+uint32_t i64_polyfill___wasi_path_open(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint32_t arg3,
+    uint32_t arg4,
+    uint32_t arg5,
+    uint32_t arg6,
+    uint32_t arg7,
+    uint32_t arg8,
+    uint32_t arg9,
+    uint32_t arg10
 ) __attribute__((
     __import_module__("i64_polyfill"),
     __import_name__("path_open"),
-    __warn_unused_result__
 ));
-
-__wasi_errno_t __wasi_path_open(
-    __wasi_fd_t fd,
-    __wasi_lookupflags_t dirflags,
-    const char *path,
-    size_t path_len,
-    __wasi_oflags_t oflags,
-    __wasi_rights_t fs_rights_base,
-    __wasi_rights_t fs_rights_inherting,
-    __wasi_fdflags_t fdflags,
-    __wasi_fd_t *opened_fd
+uint32_t __wasi_path_open(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint32_t arg3,
+    uint32_t arg4,
+    uint64_t arg5,
+    uint64_t arg6,
+    uint32_t arg7,
+    uint32_t arg8
 ) {
-  __wasi_rights_head_t fs_rights_base_head = (fs_rights_base & 0xffff0000) >> 4;
-  __wasi_rights_tail_t fs_rights_base_tail = (fs_rights_base & 0x0000ffff);
-  __wasi_rights_head_t fs_rights_inherting_head = (fs_rights_inherting & 0xffff0000) >> 4;
-  __wasi_rights_tail_t fs_rights_inherting_tail = (fs_rights_inherting & 0x0000ffff);
-  return __wasi_i64_polyfill_path_open(fd, dirflags, path, path_len, oflags,
-                                       fs_rights_base_head, fs_rights_base_tail,
-                                       fs_rights_inherting_head, fs_rights_inherting_tail,
-                                       fdflags, opened_fd);
+    uint32_t arg5_head = (arg5 & 0xffff0000) >> 4;
+    uint32_t arg5_tail = (arg5 & 0x0000ffff);uint32_t arg6_head = (arg6 & 0xffff0000) >> 4;
+    uint32_t arg6_tail = (arg6 & 0x0000ffff);
+    return i64_polyfill___wasi_path_open(arg0, arg1, arg2, arg3, arg4, arg5_head, arg5_tail, arg6_head, arg6_tail, arg7, arg8);
+}
+
+uint32_t i64_polyfill___wasi_fd_readdir(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint32_t arg3,
+    uint32_t arg4,
+    uint32_t arg5
+) __attribute__((
+    __import_module__("i64_polyfill"),
+    __import_name__("fd_readdir"),
+));
+uint32_t __wasi_fd_readdir(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint64_t arg3,
+    uint32_t arg4
+) {
+    uint32_t arg3_head = (arg3 & 0xffff0000) >> 4;
+    uint32_t arg3_tail = (arg3 & 0x0000ffff);
+    return i64_polyfill___wasi_fd_readdir(arg0, arg1, arg2, arg3_head, arg3_tail, arg4);
+}
+
+uint32_t i64_polyfill___wasi_fd_seek(
+    uint32_t arg0,
+    uint32_t arg1,
+    uint32_t arg2,
+    uint32_t arg3,
+    uint32_t arg4
+) __attribute__((
+    __import_module__("i64_polyfill"),
+    __import_name__("fd_seek"),
+));
+uint32_t __wasi_fd_seek(
+    uint32_t arg0,
+    uint64_t arg1,
+    uint32_t arg2,
+    uint32_t arg3
+) {
+    uint32_t arg1_head = (arg1 & 0xffff0000) >> 4;
+    uint32_t arg1_tail = (arg1 & 0x0000ffff);
+    return i64_polyfill___wasi_fd_seek(arg0, arg1_head, arg1_tail, arg2, arg3);
 }
