@@ -26,7 +26,6 @@ struct Editor: View {
 
 let initialTemplate = """
 import TokamakShim
-import JavaScriptKit
 
 final class Count: ObservableObject {
   @Published var value: Int
@@ -54,13 +53,14 @@ struct Counter: View {
 }
 
 struct MyApp: App {
-    var body: some Scene {
-        WindowGroup("Tokamak Demo") {
-            Counter(count: Count(value: 0), limit: 10)
-        }
+  var body: some Scene {
+    WindowGroup("Tokamak Demo") {
+      Counter(count: Count(value: 0), limit: 10)
     }
+  }
 }
 
+import JavaScriptKit
 import TokamakCore
 
 let app = MyApp()
@@ -81,7 +81,7 @@ MyApp._launch(app, rootEnvironment, div)
 struct EditorApp: App {
     let runner = Runner(compilerAPI: CompilerAPI())
     var body: some Scene {
-        WindowGroup("Tokamak Pad") {
+        WindowGroup("SwiftWasm Pad") {
             VStack {
                 NavigationHeader()
                 Editor(code: initialTemplate)
