@@ -10,7 +10,7 @@ const projectConfig = require('querystring').parse(
 
 module.exports = (mode) => {
   let config = {
-    entry: './js/index.js',
+    entry: './web/index.js',
     mode,
     output: {
       filename: 'main.js',
@@ -23,6 +23,17 @@ module.exports = (mode) => {
       port: 8080,
       useLocalIp: true,
       host: "0.0.0.0",
+    },
+    module: {
+      rules: [
+        {
+          test: /\.css/,
+          use: [
+            "style-loader",
+            { loader: "css-loader", options: { url: false } },
+          ]
+        }
+      ]
     },
     plugins: [
       new SwiftWebpackPlugin({

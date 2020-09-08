@@ -2,6 +2,7 @@ import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 import * as path from "path-browserify"
+import "../static/style.css"
 
 global._triggerDebugger = () => {
     debugger
