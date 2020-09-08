@@ -2,7 +2,7 @@ name: Build
 on:
   push: {}
 jobs:
-  run:
+  build:
     runs-on: macOS-latest
     name: Build project
     steps:
@@ -29,3 +29,10 @@ jobs:
       with:
         name: Frontend
         path: Frontend/dist
+  build-docker-image:
+    runs-on: ubuntu-latest
+    name: Build Docker image
+    steps:
+    - uses: actions/checkout@master
+    - name: Build Frontend image
+      run: docker build -f docker/Frontend/Dockerfile .
