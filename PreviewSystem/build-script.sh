@@ -68,6 +68,9 @@ rm $stub_package_build_dir/wasm32-unknown-wasi/PreviewStub
 rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*.swift.o")
 rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*.swiftmodule.o")
 rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*~partial.swiftmodule")
+rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*~partial.swiftsourceinfo")
+rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*.swiftdeps~")
+rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*~partial.swiftdoc")
 rm $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*.d")
 
 echo "-------------------------------------------------------------------------"
