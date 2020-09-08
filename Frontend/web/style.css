@@ -67,7 +67,7 @@ body {
     opacity: .8;
 }
 
-#run-button:disabled {
+#run-button.disabled-run-button {
     background: #ccc;
 }
 

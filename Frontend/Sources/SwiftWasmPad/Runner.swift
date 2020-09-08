@@ -7,16 +7,27 @@ class Runner: ObservableObject {
     private let fileSystem = NodeFileSystem(object: JSObjectRef.global.sharedFs.object!)
     private let execution = PassthroughSubject<String, Never>()
     private var cancellables: [AnyCancellable] = []
-    private var _isRunning = CurrentValueSubject<Bool, Never>(false)
-    var isRunning: Bool { _isRunning.value }
-    var objectWillChange: AnyPublisher<Void, Never>
+    private var _isRunning: Bool = false {
+        didSet { _objectWillChange.send(()) }
+    }
+    private var _isSharedLibraryDownloaded: Bool = false {
+        didSet { _objectWillChange.send(()) }
+    }
+    private let _objectWillChange = PassthroughSubject<Void, Never>()
+    var isRunnable: Bool { !_isRunning && _isSharedLibraryDownloaded }
+    let objectWillChange: AnyPublisher<Void, Never>
     
     let sharedLibrary = "/tmp/library.so.wasm"
+    lazy var dumpFn = JSClosure { _ in
+        print("isRunning: \(self._isRunning)")
+        print("_isSharedLibraryDownloaded: \(self._isSharedLibraryDownloaded)")
+        print("isRunnable: \(self.isRunnable)")
+        return .undefined
+    }
 
     init(compilerAPI: CompilerAPI) {
         self.compilerAPI = compilerAPI
-        objectWillChange = _isRunning.map { _ in }
-            .eraseToAnyPublisher()
+        objectWillChange = _objectWillChange.eraseToAnyPublisher()
         compilerAPI.sharedLibrary()
             .sink(
                 receiveCompletion: { completion in
@@ -27,6 +38,7 @@ class Runner: ObservableObject {
                     let buffer = Uint8Array.new(arrayBuffer)
                     self.fileSystem.writeFileSync(self.sharedLibrary, buffer: buffer)
                     print("library.so.wasm was downloaded")
+                    self._isSharedLibraryDownloaded = true
                 }
             )
             .store(in: &cancellables)
@@ -40,27 +52,25 @@ class Runner: ObservableObject {
                 }
             }
             .switchToLatest()
-            .print()
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case let .failure(error):
-                        print(error)
-                    case .finished: break
-                    }
-                    self?._isRunning.value = false
-                },
-                receiveValue: { [weak self] in
-                    self?._isRunning.value = false
+            .eraseToAnyPublisher()
+            .map { _ in return Result<Void, Error>.success(()) }
+            .catch { error in Just(.failure(error)) }
+            .sink { result in
+                switch result {
+                case .success: break
+                case .failure(let error):
+                    print(error)
                 }
-            )
+                self._isRunning = false
+            }
             .store(in: &cancellables)
         
+        JSObjectRef.global.dumpState = .function(dumpFn)
     }
     func run(_ code: String) {
-        guard !_isRunning.value else { return }
+        guard !_isRunning else { return }
         EventBus.flush.send()
-        _isRunning.value = true
+        _isRunning = true
         execution.send(code)
     }
 

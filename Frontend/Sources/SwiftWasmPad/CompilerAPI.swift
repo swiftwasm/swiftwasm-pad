@@ -10,11 +10,11 @@ struct MessageError: Error {
     }
 }
 
-#if DEBUG
-let endpoint = "http://dev-lambda.swiftwasm.org:8090/invoke"
-#else
+//#if DEBUG
+//let endpoint = "http://dev-lambda.swiftwasm.org:8090/invoke"
+//#else
 let endpoint = "https://syzf23805k.execute-api.ap-northeast-1.amazonaws.com/prod/CompileSwiftWasm"
-#endif
+//#endif
 
 class CompilerAPI {
     func compile(code: String) -> AnyPublisher<JSObjectRef, Error> {

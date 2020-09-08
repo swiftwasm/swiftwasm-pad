@@ -4,11 +4,9 @@ import TokamakDOM
 struct NavigationHeader: View {
     var body: some View {
         HStack {
-            Text("Tokamak")
+            Text("SwiftWasm")
                 .font(.title)
                 .padding()
-            Spacer()
-            Text("Draft.swift")
             Spacer()
         }
     }

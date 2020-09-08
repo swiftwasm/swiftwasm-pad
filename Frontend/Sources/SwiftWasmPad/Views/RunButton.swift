@@ -9,10 +9,11 @@ struct RunButton: View {
     var runner: Runner
 
     var body: some View {
-        return DynamicHTML("button", [
+        let attributes = [
             "id": "run-button",
-            "disabled": runner.isRunning ? "true" : "",
-        ], listeners: ["click": onClick]) {
+            "className": runner.isRunnable ? "" : "disabled-run-button",
+        ]
+        return DynamicHTML("button", attributes, listeners: ["click": onClick]) {
             HTML("span") { Text("RUN").foregroundColor(.white) }
         }
     }

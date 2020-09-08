@@ -1,6 +1,6 @@
 import "codemirror/theme/lucario.css"
 import "codemirror/lib/codemirror.css"
-import "static/style.css"
+import "./style.css"
 
 import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
