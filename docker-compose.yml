@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx:1.18
+    volumes:
+      - docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - frontend
+      - compile-api
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Frontend/Dockerfile
+  compile-api:
+    build:
+      context: .
+      dockerfile: docker/CompileAPI/Dockerfile
