@@ -1,10 +1,12 @@
 const path = require('path');
-const Watchpack = require('watchpack');
 const CopyPlugin = require("copy-webpack-plugin");
 const SwiftWebpackPlugin = require('@swiftwasm/swift-webpack-plugin')
+const { execSync } = require('child_process')
 
 const outputPath = path.resolve(__dirname, 'dist');
 const staticPath = path.join(__dirname, 'static');
+const projectConfig = require('querystring').parse(
+  execSync(path.resolve(__dirname, "../scripts/print-config.sh")).toString().trim())
 
 module.exports = (mode) => {
   let config = {
@@ -23,6 +25,7 @@ module.exports = (mode) => {
     plugins: [
       new SwiftWebpackPlugin({
         packageDirectory: __dirname,
+        swift_build: path.resolve(projectConfig.TOOLCHAIN, "usr/bin/swift-build"),
         target: 'SwiftWasmPad',
         dist: outputPath,
         config: mode == 'development' ? 'debug' : 'release'
@@ -30,7 +33,7 @@ module.exports = (mode) => {
       new CopyPlugin(
         [
           { from: staticPath, to: outputPath },
-          { from: path.join(__dirname, "../PreviewSystem/distribution/library.so.wasm"), to: outputPath },
+          { from: path.resolve(__dirname, "../PreviewSystem/distribution/library.so.wasm"), to: outputPath },
         ],
       ),
     ],

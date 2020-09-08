@@ -14,3 +14,5 @@ if [ ! -e $third_party_dir/$codemirror_version ]; then
     ln -sf $codemirror_version codemirror
   )
 fi
+
+"$frontend_root/../scripts/install-toolchain.sh"
