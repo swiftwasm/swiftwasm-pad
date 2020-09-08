@@ -23,8 +23,10 @@
 
 set -eu
 preview_dir="$(cd "$(dirname $0)" && pwd)"
+
+source "$preview_dir/../scripts/config.sh"
+
 tools_dir="$preview_dir/Tools"
-toolchain="$preview_dir/.toolchain/$(cat $preview_dir/../.swift-version)"
 build_dir="$preview_dir/distribution"
 stub_package_build_dir="$build_dir/PreviewStub"
 shared_object_library="$build_dir/library.so.wasm"
@@ -34,7 +36,7 @@ echo "-------------------------------------------------------------------------"
 echo "install toolchain"
 echo "-------------------------------------------------------------------------"
 
-"$preview_dir/install-toolchain.sh"
+"$preview_dir/../scripts/install-toolchain.sh"
 
 echo "-------------------------------------------------------------------------"
 echo "building PreviewStub pakcage"
@@ -43,14 +45,14 @@ echo "-------------------------------------------------------------------------"
 rm -rf $stub_package_build_dir
 
 # Build stub package for WebAssembly target
-SWIFTPM_CUSTOM_BINDIR=$toolchain/usr/bin \
-  "$toolchain/usr/bin/swift" build \
+SWIFTPM_CUSTOM_BINDIR=$TOOLCHAIN/usr/bin \
+  "$TOOLCHAIN/usr/bin/swift" build \
     --package-path "$preview_dir" \
     --triple wasm32-unknown-wasi \
     -c "$build_config" \
-    --sdk "$toolchain/usr/share/wasi-sysroot" \
-    -Xcc -I"$toolchain/usr/lib/swift/wasi/wasm32" \
-    -Xswiftc -I"$toolchain/usr/lib/swift/wasi/wasm32"
+    --sdk "$TOOLCHAIN/usr/share/wasi-sysroot" \
+    -Xcc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32" \
+    -Xswiftc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32"
 
 
 mkdir -p $stub_package_build_dir
@@ -94,18 +96,18 @@ link-shared-object-library() {
   # Extract object files from libswiftSwiftOnoneSupport.a to force link
   mkdir -p $workdir/swiftSwiftOnoneSupport
   pushd $workdir/swiftSwiftOnoneSupport > /dev/null
-  "$toolchain/usr/bin/llvm-ar" x $toolchain/usr/lib/swift_static/wasi/libswiftSwiftOnoneSupport.a
+  "$TOOLCHAIN/usr/bin/llvm-ar" x $TOOLCHAIN/usr/lib/swift_static/wasi/libswiftSwiftOnoneSupport.a
   popd > /dev/null
 
-  "$toolchain/usr/bin/wasm-ld" \
+  "$TOOLCHAIN/usr/bin/wasm-ld" \
     $link_objects \
-    $toolchain/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1.o \
-    $toolchain/usr/lib/swift_static/wasi/wasm32/swiftrt.o \
-    $toolchain/usr/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
+    $TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1.o \
+    $TOOLCHAIN/usr/lib/swift_static/wasi/wasm32/swiftrt.o \
+    $TOOLCHAIN/usr/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
     $workdir/swiftSwiftOnoneSupport/*.o \
-    -L$toolchain/usr/lib/swift_static/wasi \
-    -L$toolchain/usr/share/wasi-sysroot/usr/lib/swift \
-    -L$toolchain/usr/share/wasi-sysroot/lib/wasm32-wasi \
+    -L$TOOLCHAIN/usr/lib/swift_static/wasi \
+    -L$TOOLCHAIN/usr/share/wasi-sysroot/usr/lib/swift \
+    -L$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi \
     -lswiftCore -lswiftImageInspectionShared -lswiftWasiPthread \
     -licuuc -licudata -ldl -lc++ -lc++abi -lc -lm -lwasi-emulated-mman \
     --error-limit=0 \

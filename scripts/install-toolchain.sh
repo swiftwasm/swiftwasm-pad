@@ -1,11 +1,9 @@
 #!/bin/bash
 set -eu
-preview_dir="$(cd "$(dirname $0)" && pwd)"
-toolchain_dir="$preview_dir/.toolchain"
+scripts_dir="$(cd "$(dirname $0)" && pwd)"
+source "$scripts_dir/config.sh"
 
-SWIFT_TAG=$(cat $preview_dir/../.swift-version)
-
-if [[ -e "$toolchain_dir/$SWIFT_TAG" ]]; then
+if [[ -e "$PLATFORM_TOOLCHAIN_DIR/$SWIFT_TAG" ]]; then
     echo "$SWIFT_TAG is already installed"
     exit 0
 fi
@@ -25,6 +23,6 @@ esac
 
 TOOLCHAIN_DOWNLOAD_URL="https://github.com/swiftwasm/swift/releases/download/$SWIFT_TAG/$TOOLCHAIN_DOWNLOAD"
 
-mkdir -p "$toolchain_dir"
-cd "$toolchain_dir"
+mkdir -p "$PLATFORM_TOOLCHAIN_DIR"
+cd "$PLATFORM_TOOLCHAIN_DIR"
 wget "$TOOLCHAIN_DOWNLOAD_URL" && tar xfzv "$TOOLCHAIN_DOWNLOAD"
