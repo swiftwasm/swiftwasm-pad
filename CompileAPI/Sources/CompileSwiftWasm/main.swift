@@ -121,7 +121,8 @@ struct Toolchain {
         process.arguments = arguments
         process.launch()
         process.waitUntilExit()
-        let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
+        let binary = try Data(contentsOf: tempOutput)
+        let bytes = ByteBuffer(data: binary.base64EncodedData())
         return bytes
     }
 }
