@@ -20,7 +20,9 @@ module.exports = (mode) => {
       inline: true,
       watchContentBase: true,
       contentBase: [outputPath],
-      host: mode == 'development' ? 'dev-pad.swiftwasm.org' : 'pad.swiftwasm.org',
+      port: 8080,
+      useLocalIp: true,
+      host: "0.0.0.0",
     },
     plugins: [
       new SwiftWebpackPlugin({

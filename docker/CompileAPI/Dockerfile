@@ -30,4 +30,4 @@ RUN swift build
 COPY --from=preview-stub-builder /workdir/PreviewSystem/distribution /workdir/PreviewSystem/distribution
 
 EXPOSE 7000
-CMD ["swift", "run", "--product", "CompileAPI"]
+CMD ["swift", "run", "CompileSwiftWasm"]

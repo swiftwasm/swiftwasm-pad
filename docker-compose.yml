@@ -3,15 +3,20 @@ services:
   nginx:
     image: nginx:1.18
     volumes:
-      - docker/nginx:/etc/nginx/conf.d
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - 8090:80
     depends_on:
-      - frontend
       - compile-api
   frontend:
     build:
       context: .
       dockerfile: docker/Frontend/Dockerfile
+    ports:
+      - 8080:8080
   compile-api:
     build:
       context: .
       dockerfile: docker/CompileAPI/Dockerfile
+    environment:
+      AWS_LAMBDA_RUNTIME_API: 0.0.0.0:7000

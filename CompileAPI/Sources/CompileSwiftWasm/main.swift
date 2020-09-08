@@ -3,7 +3,6 @@ import NIO
 
 struct Request: Codable {
     let mainCode: String
-    let shell: String?
 }
 
 struct Response: Codable {
@@ -59,27 +58,17 @@ struct PreviewStub {
     
     var includes: [URL] {
         [
-            root.appendingPathComponent(".build/wasm32-unknown-wasi/debug"),
-            root.appendingPathComponent(".build/checkouts/JavaScriptKit/Sources/_CJavaScriptKit/include"),
-            root.appendingPathComponent(".build/checkouts/Runtime/Sources/CRuntime/include"),
+            root.appendingPathComponent("wasm32-unknown-wasi"),
+            root.appendingPathComponent("checkouts/JavaScriptKit/Sources/_CJavaScriptKit/include"),
+            root.appendingPathComponent("checkouts/Runtime/Sources/CRuntime/include"),
         ]
     }
     
     var modulemaps: [URL] {
         [
-            root.appendingPathComponent(".build/checkouts/Runtime/Sources/CRuntime/include/module.modulemap"),
-            root.appendingPathComponent(".build/checkouts/JavaScriptKit/Sources/_CJavaScriptKit/include/module.modulemap"),
+            root.appendingPathComponent("checkouts/Runtime/Sources/CRuntime/include/module.modulemap"),
+            root.appendingPathComponent("checkouts/JavaScriptKit/Sources/_CJavaScriptKit/include/module.modulemap"),
         ]
-    }
-    
-    var linkFiles: [URL] {
-        let linkFileList = root.appendingPathComponent(".build/wasm32-unknown-wasi/debug/PreviewStub.product/Objects.LinkFileList")
-        return try! String(contentsOf: linkFileList).split(separator: "\n")
-            .filter { !$0.contains(".build/wasm32-unknown-wasi/debug/PreviewStub.build/main.swift.o") }
-            .map {
-                let path = $0.replacingOccurrences(of: "/home/work/PreviewStub", with: root.path)
-                return URL(fileURLWithPath: path)
-        }
     }
 }
 
@@ -104,53 +93,7 @@ struct Toolchain {
     var tempOutput: URL {
         tempDirectory.appendingPathComponent("main.o")
     }
-    
-    func emitTokamakExecutable(for code: String) throws -> ByteBuffer {
-        let linkerFlags = [
-            "--export=swjs_call_host_function",
-            "--export=swjs_prepare_host_function_call",
-            "--export=swjs_cleanup_host_function_call",
-            "--export=swjs_library_version",
-            "--allow-undefined"
-        ] + previewStub.linkFiles.map(\.path)
-        var arguments = [
-            "-", "-o", tempOutput.path,
-            "-target", "wasm32-unknown-wasi",
-            "-sdk", sysroot.path,
-            "-Osize", "-whole-module-optimization"
-        ]
-        
-        arguments += linkerFlags.flatMap {
-            ["-Xlinker", $0]
-        }
-        arguments += previewStub.includes.flatMap {
-            ["-I", $0.path]
-        }
 
-        arguments += previewStub.modulemaps.flatMap {
-            ["-Xcc", "-fmodule-map-file=\($0.path)"]
-        }
-
-        guard let inputData = code.data(using: .utf8) else {
-            throw Error.failedToEncodeCode
-        }
-
-        let process = Process()
-        process.launchPath = swiftCompiler.path
-        process.arguments = arguments
-        let stdinPipe = Pipe()
-        stdinPipe.fileHandleForWriting.writeabilityHandler = { handle in
-            handle.write(inputData)
-            try! handle.close()
-        }
-        process.standardInput = stdinPipe
-        process.launch()
-        process.waitUntilExit()
-        let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
-        print("End of \(#function)")
-        return bytes
-    }
-    
     func emitObject(for code: String) throws -> ByteBuffer {
         let tempInput = tempDirectory.appendingPathComponent("main.swift")
 
@@ -172,15 +115,10 @@ struct Toolchain {
         guard let inputData = code.data(using: .utf8) else {
             throw Error.failedToEncodeCode
         }
-        try! inputData.write(to: tempInput)
+        try inputData.write(to: tempInput)
         let process = Process()
         process.launchPath = swiftCompiler.path
         process.arguments = arguments
-        let stdinPipe = Pipe()
-        stdinPipe.fileHandleForWriting.writeabilityHandler = { handle in
-            handle.write(inputData)
-        }
-        process.standardInput = stdinPipe
         process.launch()
         process.waitUntilExit()
         let bytes = try ByteBuffer(data: Data(contentsOf: tempOutput))
