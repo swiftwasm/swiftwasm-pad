@@ -30,7 +30,7 @@ tools_dir="$preview_dir/Tools"
 build_dir="$preview_dir/distribution"
 stub_package_build_dir="$build_dir/PreviewStub"
 shared_object_library="$build_dir/library.so.wasm"
-build_config=debug
+build_config=release
 
 echo "-------------------------------------------------------------------------"
 echo "install toolchain"
@@ -49,7 +49,7 @@ SWIFTPM_CUSTOM_BINDIR=$TOOLCHAIN/usr/bin \
   "$TOOLCHAIN/usr/bin/swift" build \
     --package-path "$preview_dir" \
     --triple wasm32-unknown-wasi \
-    -c "$build_config" \
+    -c "$build_config" -Xswiftc -Osize \
     --sdk "$TOOLCHAIN/usr/share/wasi-sysroot" \
     -Xcc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32" \
     -Xswiftc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32"
