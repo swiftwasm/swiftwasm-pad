@@ -9,6 +9,7 @@ import * as path from "path-browserify";
 import "codemirror/mode/swift/swift";
 
 import { SwiftWasmPadExport } from "./export";
+import { wrapI64Polyfill } from "./i64_polyfill";
 
 const startWasiTask = async () => {
 
@@ -44,11 +45,14 @@ const startWasiTask = async () => {
     }
   });
 
+  const i64Polyfill = wrapI64Polyfill(wasi);
+
   window.swiftExports = new SwiftWasmPadExport(wasmFs.fs);
 
   const response = await fetch("SwiftWasmPad.wasm");
   const importObject = {
     wasi_snapshot_preview1: wasi.wasiImport,
+    i64_polyfill: i64Polyfill,
     javascript_kit: swift.importObjects(),
   };
 

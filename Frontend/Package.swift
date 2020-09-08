@@ -14,9 +14,11 @@ let package = Package(
         .target(
             name: "SwiftWasmPad",
             dependencies: [
+                .target(name: "i64_polyfill"),
                 .product(name: "JavaScriptKit", package: "JavaScriptKit"),
                 .product(name: "TokamakShim", package: "Tokamak"),
                 .product(name: "ChibiLink", package: "ChibiLink"),
             ]),
+        .target(name: "i64_polyfill"),
     ]
 )
