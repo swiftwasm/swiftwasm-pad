@@ -2,7 +2,11 @@ import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 import * as path from "path-browserify"
+import "codemirror/theme/lucario.css"
+import "codemirror/lib/codemirror.css"
 import "../static/style.css"
+import * as CodeMirror from "codemirror/lib/codemirror"
+import "codemirror/mode/swift/swift"
 
 global._triggerDebugger = () => {
     debugger
