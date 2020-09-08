@@ -21,7 +21,6 @@ jobs:
     - name: Build Frontend
       working-directory: Frontend
       run: |
-        ./scripts/install-dependency.sh
         npm install
         npm run build
     - name: Upload Frontend artifact
