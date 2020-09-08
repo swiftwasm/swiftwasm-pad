@@ -2,6 +2,7 @@
 import PackageDescription
 let package = Package(
     name: "SwiftWasmPad",
+    platforms: [.macOS(.v10_15)],
     products: [
         .executable(name: "SwiftWasmPad", targets: ["SwiftWasmPad"]),
     ],

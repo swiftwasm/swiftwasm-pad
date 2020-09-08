@@ -33,7 +33,7 @@ const startWasiTask = async () => {
 
   wasmFs.fs.mkdirSync("/tmp", 0o777);
 
-  let wasi = new WASI({
+  const wasi = new WASI({
     args: [], env: {},
     preopenDirectories: {
       "/tmp": "/tmp"
