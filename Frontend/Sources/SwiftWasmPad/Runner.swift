@@ -4,7 +4,7 @@ import ChibiLink
 
 class Runner: ObservableObject {
     private let compilerAPI: CompilerAPI
-    private let fileSystem = NodeFileSystem(object: JSObjectRef.global.sharedFs.object!)
+    private let fileSystem = NodeFileSystem(object: swiftExport.sharedFs.object!)
     private let execution = PassthroughSubject<String, Never>()
     private var cancellables: [AnyCancellable] = []
     private var _isRunning: Bool = false {
@@ -91,10 +91,9 @@ class Runner: ObservableObject {
         ]
         try performLinker(objects, outputStream: writer, exports: exports)
 
-        let createArrayBufferFromSwiftArray = JSObjectRef.global.createArrayBufferFromSwiftArray.function!
         return writer.bytes.withUnsafeBufferPointer { bufferPtr in
             let rawPtr = Int(bitPattern: bufferPtr.baseAddress!)
-            let arrayBuffer = createArrayBufferFromSwiftArray(rawPtr, bufferPtr.count)
+            let arrayBuffer = swiftExport.createArrayBufferFromSwiftArray!(rawPtr, bufferPtr.count)
             return output(arrayBuffer.object!)
         }
     }

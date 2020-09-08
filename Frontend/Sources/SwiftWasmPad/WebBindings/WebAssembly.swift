@@ -3,12 +3,9 @@ import CombineShim
 
 class WebAssembly {
     private static let Uint8Array = JSObjectRef.global.Uint8Array.function!
-    private static let swiftExport = JSObjectRef.global.swiftExports.object!
-    private static let execWasmFn = swiftExport.execWasm.function!
-    private static let installHookFn = swiftExport.installHook.function!
 
     static func runWasm(_ arrayBuffer: JSObjectRef) -> AnyPublisher<Void, Error> {
-        let promise = Promise(execWasmFn(arrayBuffer))!
+        let promise = Promise(swiftExport.execWasm!(arrayBuffer))!
         return futurefy(promise).map { _ in }
             .mapError { $0 }
             .eraseToAnyPublisher()
@@ -25,6 +22,6 @@ class WebAssembly {
             return .undefined
         }
         intalledHook = closure
-        installHookFn(closure)
+        _ = swiftExport.installHook!(closure)
     }
 }

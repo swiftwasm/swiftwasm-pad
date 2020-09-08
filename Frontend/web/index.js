@@ -5,59 +5,10 @@ import "./style.css"
 import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
-import * as path from "path-browserify"
-import * as CodeMirror from "codemirror/lib/codemirror"
-import "codemirror/mode/swift/swift"
+import * as path from "path-browserify";
+import "codemirror/mode/swift/swift";
 
-global._triggerDebugger = () => {
-    debugger
-};
-
-// outputHook(descriptor: number, buffer: string): void
-let outputHook = null
-
-window.swiftExports = {
-  CodeMirror: CodeMirror,
-  installHook: (hookFn) => {
-    outputHook = hookFn
-  },
-  execWasm: async (arrayBuffer) => {
-    const swift = new SwiftRuntime();
-    const wasmFs = new WasmFs();
-
-    const originalWriteSync = wasmFs.fs.writeSync;
-    wasmFs.fs.writeSync = (fd, buffer, offset, length, position) => {
-      const text = new TextDecoder("utf-8").decode(buffer);
-      outputHook(fd, text)
-      return originalWriteSync(fd, buffer, offset, length, position);
-    };
-
-    const wasi = new WASI({
-      bindings: {
-        ...WASI.defaultBindings,
-        fs: wasmFs.fs
-      }
-    });
-
-    const importObject = {
-      executeScript: (script, length) => {
-        console.log(this)
-      }
-    }
-
-    const wasmBytes = new Uint8Array(arrayBuffer).buffer;
-    const { instance } = await WebAssembly.instantiate(wasmBytes, {
-      wasi_snapshot_preview1: wasi.wasiImport,
-      wasi_unstable: wasi.wasiImport,
-      javascript_kit: swift.importObjects(),
-      ...importObject,
-    });
-
-    importObject.instance = instance
-    swift.setInstance(instance);
-    wasi.start(instance);
-  }
-}
+import { SwiftWasmPadExport } from "./export";
 
 const startWasiTask = async () => {
 
@@ -69,25 +20,17 @@ const startWasiTask = async () => {
   wasmFs.fs.writeSync = (fd, buffer, offset, length, position) => {
     const text = new TextDecoder("utf-8").decode(buffer);
     switch (fd) {
-    case 1:
-      console.log(text);
-      break;
-    case 2:
-      console.error(text);
-      break;
+      case 1:
+        console.log(text);
+        break;
+      case 2:
+        console.error(text);
+        break;
     }
     return originalWriteSync(fd, buffer, offset, length, position);
   };
 
   wasmFs.fs.mkdirSync("/tmp", 0o777);
-  window.sharedFs = wasmFs.fs
-
-  let theInstance = null;
-  window.createArrayBufferFromSwiftArray = (ptr, length) => {
-    const memory = theInstance.exports.memory;
-    const memBuffer = new Uint8Array(memory.buffer);
-    return memBuffer.slice(ptr, ptr + length);
-  }
 
   let wasi = new WASI({
     args: [], env: {},
@@ -101,7 +44,7 @@ const startWasiTask = async () => {
     }
   });
 
-  window.debugWasi = wasi
+  window.swiftExports = new SwiftWasmPadExport(wasmFs.fs);
 
   const response = await fetch("SwiftWasmPad.wasm");
   const importObject = {
@@ -119,7 +62,7 @@ const startWasiTask = async () => {
     }
   })();
 
-  theInstance = instance;
+  window.swiftExports.setInstance(instance);
   swift.setInstance(instance);
   wasi.start(instance);
 };

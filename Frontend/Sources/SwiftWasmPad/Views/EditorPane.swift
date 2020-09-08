@@ -3,8 +3,6 @@ import TokamakCore
 import JavaScriptKit
 import CombineShim
 
-private let swiftExport = JSObjectRef.global.swiftExports.object!
-
 struct EditorPane: View {
     
     final class State: ObservableObject {
