@@ -1,5 +1,5 @@
 FROM swift:5.2
-RUN apt update && apt install nodejs npm wget -y
+RUN apt update && apt install nodejs npm wget curl -y
 WORKDIR /workdir/Frontend
 
 # Install toolchain
@@ -24,4 +24,5 @@ RUN /workdir/PreviewSystem/build-script.sh
 # Build main project
 COPY Frontend /workdir/Frontend
 RUN npm run build
+EXPOSE 8080
 CMD ["npm", "run", "start"]
