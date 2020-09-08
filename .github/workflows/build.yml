@@ -29,10 +29,17 @@ jobs:
       with:
         name: Frontend
         path: Frontend/dist
-  build-docker-image:
+  build-frontend-docker-image:
     runs-on: ubuntu-latest
-    name: Build Docker image
+    name: Build Frontend Docker image
     steps:
     - uses: actions/checkout@master
     - name: Build Frontend image
       run: docker build -f docker/Frontend/Dockerfile .
+  build-compile-api-docker-image:
+    runs-on: ubuntu-latest
+    name: Build CompileAPI Docker image
+    steps:
+    - uses: actions/checkout@master
+    - name: Build CompileAPI image
+      run: docker build -f docker/CompileAPI/Dockerfile .
