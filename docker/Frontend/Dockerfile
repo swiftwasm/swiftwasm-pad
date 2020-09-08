@@ -1,5 +1,5 @@
 FROM swift:5.2
-RUN apt update && apt install nodejs npm wget curl -y
+RUN apt update && apt install nodejs npm wget curl unzip -y
 WORKDIR /workdir/Frontend
 
 # Install toolchain
