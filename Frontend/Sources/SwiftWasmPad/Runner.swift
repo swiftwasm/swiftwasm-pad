@@ -61,7 +61,7 @@ class Runner: ObservableObject {
             .store(in: &cancellables)
     }
     func run(_ code: String) {
-        guard !_isRunning else { return }
+        guard isRunnable else { return }
         EventBus.flush.send()
         _isRunning = true
         execution.send(code)

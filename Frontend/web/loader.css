@@ -108,6 +108,18 @@
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #fff transparent transparent transparent;
 }
+@media (prefers-color-scheme: light) {
+  .lds-ring div {
+    border-color: rgb(38, 38, 38) transparent transparent transparent;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .lds-ring div {
+    border-color: #fff transparent transparent transparent;
+  }
+}
+
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
 }
