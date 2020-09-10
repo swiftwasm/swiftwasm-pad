@@ -25,7 +25,7 @@ const startWasiTask = async () => {
         console.log(text);
         break;
       case 2:
-        console.error(text);
+        console.warn(text);
         break;
     }
     return originalWriteSync(fd, buffer, offset, length, position);

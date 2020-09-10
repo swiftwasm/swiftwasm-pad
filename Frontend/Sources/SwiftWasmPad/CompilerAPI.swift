@@ -44,8 +44,7 @@ class CompilerAPI {
     }
     
     func sharedLibrary() -> AnyPublisher<JSObjectRef, Error> {
-        let promise = fetch("library.so.wasm", options: [:])
-        return futurefy(promise)
+        return futurefy(Promise(swiftExport.sharedLibrary)!)
             .flatMap { response -> Future<JSValue, JSError> in
                 let promise = response.object!.arrayBuffer!()
                 return futurefy(Promise(promise)!)

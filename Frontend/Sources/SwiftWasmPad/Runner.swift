@@ -15,6 +15,7 @@ class Runner: ObservableObject {
     }
     private let _objectWillChange = PassthroughSubject<Void, Never>()
     var isRunnable: Bool { !_isRunning && _isSharedLibraryDownloaded }
+    var isSharedLibraryDownloading: Bool { return !_isSharedLibraryDownloaded }
     let objectWillChange: AnyPublisher<Void, Never>
     
     let sharedLibrary = "/tmp/library.so.wasm"

@@ -10,6 +10,7 @@ export class SwiftWasmPadExport {
     this.outputHook = null;
     this.theInstance = null;
     this.sharedFs = sharedFs;
+    this.sharedLibrary = fetch("library.so.wasm")
   }
 
   createArrayBufferFromSwiftArray(ptr, length) {
