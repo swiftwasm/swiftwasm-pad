@@ -92,6 +92,14 @@ struct EditorApp: App {
     }
 }
 
+func removeLoader() {
+  let document = JSObjectRef.global.document.object!
+  _ = document.getElementById!("loader").object!
+    .parentNode.object!
+    .removeChild!(document.getElementById!("loader"))
+}
+
+removeLoader()
 EditorApp.main()
 WebAssembly.installHook { (fd, buffer) in
     switch fd {

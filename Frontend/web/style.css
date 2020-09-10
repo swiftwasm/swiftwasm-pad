@@ -1,3 +1,5 @@
+@import './loader.css';
+
 /* Third-party patches */
 
 .CodeMirror {
@@ -19,6 +21,7 @@
 }
 
 body {
+    margin: 0;
     font-size: 14px;
     font-family: "Roboto Mono",monospace;
     font-weight: 400;
