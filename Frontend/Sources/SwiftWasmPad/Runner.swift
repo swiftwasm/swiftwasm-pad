@@ -19,12 +19,6 @@ class Runner: ObservableObject {
     let objectWillChange: AnyPublisher<Void, Never>
     
     let sharedLibrary = "/tmp/library.so.wasm"
-    lazy var dumpFn = JSClosure { _ in
-        print("isRunning: \(self._isRunning)")
-        print("_isSharedLibraryDownloaded: \(self._isSharedLibraryDownloaded)")
-        print("isRunnable: \(self.isRunnable)")
-        return .undefined
-    }
 
     init(compilerAPI: CompilerAPI) {
         self.compilerAPI = compilerAPI
@@ -65,8 +59,6 @@ class Runner: ObservableObject {
                 self._isRunning = false
             }
             .store(in: &cancellables)
-        
-        JSObjectRef.global.dumpState = .function(dumpFn)
     }
     func run(_ code: String) {
         guard !_isRunning else { return }
