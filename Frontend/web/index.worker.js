@@ -36,7 +36,6 @@ onmessage = event => {
       break;
     case "link":
       const args = eventData.value
-      console.log(args)
       const wasi = new WASI({
         args: args, env: {},
         preopenDirectories: {

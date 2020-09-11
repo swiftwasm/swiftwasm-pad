@@ -48,19 +48,20 @@ class Runner: ObservableObject {
                 try self.linkObjects(["/tmp/main.o": $0])
             }
             .switchToLatest()
-            .map { WebAssembly.runWasm($0) }
-            .switchToLatest()
+            .flatMap {
+                WebAssembly.runWasm($0).mapError { _ -> Error in }
+            }
             .eraseToAnyPublisher()
             .map { _ in return Result<Void, Error>.success(()) }
             .catch { error in Just(.failure(error)) }
-            .sink { result in
+            .sink(receiveValue: { result in
                 switch result {
                 case .success: break
                 case .failure(let error):
                     console.error(String(describing: error))
                 }
                 self._isRunning = false
-            }
+            })
             .store(in: &cancellables)
     }
     func run(_ code: String) {
