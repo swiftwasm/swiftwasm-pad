@@ -72,6 +72,11 @@ struct PreviewStub {
     }
 }
 
+struct CompileError: Error {
+    let stderr: String
+    let statusCode: Int32
+}
+
 struct Toolchain {
     
     enum Error: Swift.Error {
@@ -117,10 +122,18 @@ struct Toolchain {
         }
         try inputData.write(to: tempInput)
         let process = Process()
+        let stderrPipe = Pipe()
         process.launchPath = swiftCompiler.path
         process.arguments = arguments
+        process.standardError = stderrPipe
         process.launch()
         process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            let stderrData = stderrPipe.fileHandleForWriting.readDataToEndOfFile()
+            let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
+            throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
+        }
         let binary = try Data(contentsOf: tempOutput)
         let bytes = ByteBuffer(data: binary.base64EncodedData())
         return bytes
