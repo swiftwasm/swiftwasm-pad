@@ -69,7 +69,7 @@ onmessage = event => {
           _provide_mode: () => { return 0 /* linker mode */; },
           writeOutput: (ptr, length) => {
             const memory = theInstance.exports.memory;
-            const uint8Array = new Uint8Array(memory.buffer, ptr, length);
+            const uint8Array = new Uint8Array(memory.buffer, ptr, length).slice();
             postMessage(uint8Array, [uint8Array.buffer])
           },
         }
