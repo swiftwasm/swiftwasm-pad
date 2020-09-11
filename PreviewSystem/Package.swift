@@ -10,6 +10,10 @@ let package = Package(
     targets: [
         .target(name: "PreviewStub", dependencies: [
             .product(name: "TokamakShim", package: "Tokamak"),
+            .target(name: "TokamakPreview"),
+        ]),
+        .target(name: "TokamakPreview", dependencies: [
+            .product(name: "TokamakShim", package: "Tokamak"),
         ]),
     ]
 )
