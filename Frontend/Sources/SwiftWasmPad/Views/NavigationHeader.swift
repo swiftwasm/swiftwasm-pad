@@ -4,12 +4,17 @@ import TokamakStaticHTML
 struct NavigationHeader: View {
     @EnvironmentObject
     var runner: Runner
+    
+    @Environment(\.colorScheme)
+    var colorScheme
 
     var body: some View {
         HStack {
-            Text("SwiftWasm")
-                .font(.title)
-                .padding()
+            nativeLink("https://swiftwasm.org") {
+                Text("SwiftWasm")
+                    .font(.title)
+                    .padding()
+            }
             Spacer()
             if runner.isSharedLibraryDownloading {
                 Text("Downloading Shared Library...")
@@ -20,6 +25,25 @@ struct NavigationHeader: View {
                     HTML("div")
                 }
             }
+
+            nativeLink("https://github.com/kateinoigakukun/swiftwasm-pad") {
+                HTML("img", [
+                    "src": colorScheme == .dark ? "GitHub-Mark-Light-64px.png" : "GitHub-Mark-64px.png",
+                    "style": """
+                    width: 32px; height: 32px;
+                    """
+                ])
+                .padding()
+            }
         }
+    }
+    
+    func nativeLink<Content: View>(_ url: String, @ViewBuilder _ content: () -> Content) -> some View {
+        HTML("a", [
+            "href": url,
+            "style": "text-decoration: none;",
+            "target": "_blank",
+            "rel": "noreferrer noopener",
+        ], content: content)
     }
 }
