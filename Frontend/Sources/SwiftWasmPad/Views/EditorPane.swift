@@ -18,7 +18,6 @@ struct EditorPane: View {
         var observedNodeRef: JSObjectRef?
         
         lazy var onChange = JSClosure { [weak self] _ in
-            console.log("Received event on change")
             guard let editor = self?.editorRef else {
                 console.log("Failed to emit event")
                 return .undefined

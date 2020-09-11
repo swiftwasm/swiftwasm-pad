@@ -26,7 +26,8 @@ class Runner: ObservableObject {
         compilerAPI.sharedLibrary()
             .sink(
                 receiveCompletion: { completion in
-                    print(completion)
+                    guard case let .failure(error) = completion else { return }
+                    console.error(String(describing: error))
                 },
                 receiveValue: { [unowned self] arrayBuffer in
                     let Uint8Array = JSObjectRef.global.Uint8Array.function!
@@ -54,7 +55,7 @@ class Runner: ObservableObject {
                 switch result {
                 case .success: break
                 case .failure(let error):
-                    print(error)
+                    console.error(String(describing: error))
                 }
                 self._isRunning = false
             }

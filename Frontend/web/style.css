@@ -16,10 +16,6 @@
     width: 100%;
 }
 
-.CodeMirror-scroll {
-    padding: 24px;
-}
-
 body {
     margin: 0;
     font-size: 14px;
@@ -40,7 +36,10 @@ body {
 }
 
 #editor-pane {
-    flex-basis: calc(50% - 3px);
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: #2b3e50;
+    flex-basis: calc(50% - 3px - 16px);
     position: relative;
     /* 50px is magic number used by CodeMirror to hide the element's real scrollbars */
     height: calc(100% - 50px);
