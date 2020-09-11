@@ -31,10 +31,7 @@ class Runner: ObservableObject {
                     console.error(String(describing: error))
                 },
                 receiveValue: { [unowned self] arrayBuffer in
-                    let Uint8Array = JSObjectRef.global.Uint8Array.function!
-                    let buffer = Uint8Array.new(arrayBuffer)
                     self.linker.writeInput(self.sharedLibrary, buffer: arrayBuffer)
-                    self.fileSystem.writeFileSync(self.sharedLibrary, buffer: buffer)
                     print("library.so.wasm was downloaded")
                     self._isSharedLibraryDownloaded = true
                 }
