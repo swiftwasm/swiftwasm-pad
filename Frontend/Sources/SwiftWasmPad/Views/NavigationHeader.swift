@@ -7,6 +7,8 @@ struct NavigationHeader: View {
     
     @Environment(\.colorScheme)
     var colorScheme
+    
+    var onShare: () -> Void
 
     var body: some View {
         HStack {
@@ -26,6 +28,7 @@ struct NavigationHeader: View {
                 }
             }
 
+            ShareButton(action: onShare)
             nativeLink("https://github.com/kateinoigakukun/swiftwasm-pad") {
                 HTML("img", [
                     "src": colorScheme == .dark ? "GitHub-Mark-Light-64px.png" : "GitHub-Mark-64px.png",

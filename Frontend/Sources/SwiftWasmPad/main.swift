@@ -1,6 +1,7 @@
 import TokamakDOM
 import CombineShim
 import JavaScriptKit
+import struct TokamakStaticHTML.HTML
 
 struct Editor: View {
     @State var code: String
@@ -8,19 +9,38 @@ struct Editor: View {
     var runner: Runner
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            EditorPane(content: $code) {
-                runner.run(code)
+        VStack {
+            NavigationHeader(onShare: copyShareLink)
+            HStack(alignment: .top, spacing: 0) {
+                EditorPane(content: $code) {
+                    runner.run(code)
+                }
+                HTML("div", ["style": "flex-basis: 6px;"])
+                VStack {
+                    PreviewPane()
+                    HTML("div", ["style": "flex-basis: 6px;"])
+                    ConsolePane()
+                }
+                .id("right-pane")
             }
-            DynamicHTML("div", ["style": "flex-basis: 6px;"])
-            VStack {
-                PreviewPane()
-                DynamicHTML("div", ["style": "flex-basis: 6px;"])
-                ConsolePane()
-            }
-            .id("right-pane")
+            .id("panels")
         }
-        .id("panels")
+    }
+
+    func copyShareLink() {
+        let encodeURIComponent = JSObjectRef.global.encodeURIComponent.function!
+        let encodedCode = encodeURIComponent(code).string!
+        let newPath = "\(location.pathname)?code=\(encodedCode)"
+        let Object = JSObjectRef.global.Object.function!
+        _ = JSObjectRef.global.history.object!.replaceState!(Object.new(), "", newPath)
+        let promise = JSObjectRef.global.navigator.object!
+            .clipboard.object!.writeText!(location.href)
+        Promise(promise)!
+            .catch { console.error($0) }
+            .then { _ in
+                _ = JSObjectRef.global.alert!("URL copied to clipboard")
+                return .undefined
+            }
     }
 }
 
@@ -78,16 +98,23 @@ _ = preview.appendChild!(div)
 MyApp._launch(app, rootEnvironment, div)
 """
 
+
+func queryCode() -> String? {
+    let URLSearchParams = JSObjectRef.global.URLSearchParams.function!
+    let params = URLSearchParams.new(location.search)
+    let getter = params.get("get").function!
+    let maybeCode = getter.apply(this: params, arguments: "code")
+    return maybeCode.string
+}
+
 struct EditorApp: App {
     let runner = Runner(compilerAPI: CompilerAPI())
+    let initial: String = queryCode() ?? initialTemplate
     var body: some Scene {
         WindowGroup("SwiftWasm Pad") {
-            VStack {
-                NavigationHeader()
-                Editor(code: initialTemplate)
-            }
-            .id("root-stack")
-            .environmentObject(runner)
+            Editor(code: initial)
+                .id("root-stack")
+                .environmentObject(runner)
         }
     }
 }

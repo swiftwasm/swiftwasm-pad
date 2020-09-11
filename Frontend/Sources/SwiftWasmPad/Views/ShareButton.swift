@@ -2,19 +2,16 @@ import TokamakDOM
 import TokamakStaticHTML
 import JavaScriptKit
 
-struct RunButton: View {
+struct ShareButton: View {
     let action: () -> Void
-    
-    @EnvironmentObject
-    var runner: Runner
 
     var body: some View {
         let attributes = [
-            "id": "run-button",
-            "className": "button \(runner.isRunnable ? "" : "disabled-run-button")",
+            "id": "share-button",
+            "className": "button",
         ]
         return DynamicHTML("button", attributes, listeners: ["click": onClick]) {
-            HTML("span") { Text("RUN").foregroundColor(.white) }
+            HTML("span") { Text("Share").foregroundColor(.white) }
         }
     }
     

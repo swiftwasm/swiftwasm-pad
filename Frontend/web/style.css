@@ -10,7 +10,6 @@
     color: inherit;
     box-shadow: none;
     line-height: 20px;
-    /* position: absolute; */
     top: 0;
     left: 0;
     width: 100%;
@@ -51,6 +50,9 @@ body {
     right: 0;
     margin: 8px 24px 0 0;
     z-index: 5;
+}
+
+.button {
     background-color: #168afd;
     color: white;
     outline: none;
@@ -65,11 +67,11 @@ body {
     border-radius: 4px;
 }
 
-#run-button:hover {
+.button:hover {
     opacity: .8;
 }
 
-#run-button.disabled-run-button {
+.button.disabled-button {
     background: #ccc;
 }
 
