@@ -32,7 +32,11 @@ module.exports = (mode) => {
             "style-loader",
             { loader: "css-loader", options: { url: false } },
           ]
-        }
+        },
+        {
+          test: /\.worker\.js$/,
+          use: { loader: 'worker-loader' },
+        },
       ]
     },
     plugins: [

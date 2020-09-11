@@ -19,6 +19,7 @@ class Runner: ObservableObject {
     let objectWillChange: AnyPublisher<Void, Never>
     
     let sharedLibrary = "/tmp/library.so.wasm"
+    let linker = Linker()
 
     init(compilerAPI: CompilerAPI) {
         self.compilerAPI = compilerAPI
@@ -32,6 +33,7 @@ class Runner: ObservableObject {
                 receiveValue: { [unowned self] arrayBuffer in
                     let Uint8Array = JSObjectRef.global.Uint8Array.function!
                     let buffer = Uint8Array.new(arrayBuffer)
+                    self.linker.writeInput(self.sharedLibrary, buffer: arrayBuffer)
                     self.fileSystem.writeFileSync(self.sharedLibrary, buffer: buffer)
                     print("library.so.wasm was downloaded")
                     self._isSharedLibraryDownloaded = true
@@ -43,10 +45,10 @@ class Runner: ObservableObject {
             .map { compilerAPI.compile(code: $0) }
             .switchToLatest()
             .tryMap { [unowned self] in
-                try self.linkObjects(["/tmp/main.o": $0]) {
-                    WebAssembly.runWasm($0)
-                }
+                try self.linkObjects(["/tmp/main.o": $0])
             }
+            .switchToLatest()
+            .map { WebAssembly.runWasm($0) }
             .switchToLatest()
             .eraseToAnyPublisher()
             .map { _ in return Result<Void, Error>.success(()) }
@@ -68,28 +70,11 @@ class Runner: ObservableObject {
         execution.send(code)
     }
 
-    func linkObjects<T>(_ inputs: [String: JSObjectRef], _ output: (JSObjectRef) -> T) throws -> T {
-        let Uint8Array = JSObjectRef.global.Uint8Array.function!
+    func linkObjects(_ inputs: [String: JSObjectRef]) throws -> Future<JSObjectRef, Error> {
         for (filename, arrayBuffer) in inputs {
-            let buffer = Uint8Array.new(arrayBuffer)
-            fileSystem.writeFileSync(filename, buffer: buffer)
+            linker.writeInput(filename, buffer: arrayBuffer)
         }
-
-        let objects = Array(inputs.keys) + [sharedLibrary]
-        let writer = OutputWriter()
-        let exports = [
-            "swjs_call_host_function",
-            "swjs_prepare_host_function_call",
-            "swjs_cleanup_host_function_call",
-            "swjs_library_version",
-        ]
-        try performLinker(objects, outputStream: writer, exports: exports)
-
-        return writer.bytes.withUnsafeBufferPointer { bufferPtr in
-            let rawPtr = Int(bitPattern: bufferPtr.baseAddress!)
-            let arrayBuffer = swiftExport.createArrayBufferFromSwiftArray!(rawPtr, bufferPtr.count)
-            return output(arrayBuffer.object!)
-        }
+        return linker.link(Array(inputs.keys) + [sharedLibrary])
     }
 
     class OutputWriter: OutputByteStream {

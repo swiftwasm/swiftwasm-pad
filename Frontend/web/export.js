@@ -2,15 +2,19 @@ import * as CodeMirror from "codemirror/lib/codemirror"
 import { SwiftRuntime } from "javascript-kit-swift";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
+import Worker from "./index.worker.js"
 
 export class SwiftWasmPadExport {
 
-  constructor(sharedFs) {
+  constructor(sharedFs, instance, module) {
     this.CodeMirror = CodeMirror;
     this.outputHook = null;
-    this.theInstance = null;
+    this.theModule = module;
+    this.theInstance = instance;
     this.sharedFs = sharedFs;
     this.sharedLibrary = fetch("library.so.wasm")
+    this.linkerWorker = new Worker();
+    this.linkerWorker.postMessage({ eventType: "setModule", value: module });
   }
 
   createArrayBufferFromSwiftArray(ptr, length) {

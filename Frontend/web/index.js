@@ -47,26 +47,29 @@ const startWasiTask = async () => {
 
   const i64Polyfill = wrapI64Polyfill(wasi.wasiImport);
 
-  window.swiftExports = new SwiftWasmPadExport(wasmFs.fs);
-
   const response = await fetch("SwiftWasmPad.wasm");
   const importObject = {
     wasi_snapshot_preview1: wasi.wasiImport,
     i64_polyfill: i64Polyfill,
     javascript_kit: swift.importObjects(),
+    env: {
+      _provide_mode: () => { return 1 /* app mode */; },
+      writeOutput: () => { /* stub */},
+    }
   };
 
-  const { instance } = await (async () => {
-    if (WebAssembly.instantiateStreaming) {
-      return await WebAssembly.instantiateStreaming(response, importObject);
+  const module = await (async () => {
+    if (WebAssembly.compileStreaming) {
+      return await WebAssembly.compileStreaming(response);
     } else {
       const responseArrayBuffer = await response.arrayBuffer();
       const wasmBytes = new Uint8Array(responseArrayBuffer).buffer;
-      return await WebAssembly.instantiate(wasmBytes, importObject);
+      return await WebAssembly.compile(wasmBytes);
     }
   })();
 
-  window.swiftExports.setInstance(instance);
+  const instance = await WebAssembly.instantiate(module, importObject);
+  window.swiftExports = new SwiftWasmPadExport(wasmFs.fs, instance, module);
   swift.setInstance(instance);
   wasi.start(instance);
 };
