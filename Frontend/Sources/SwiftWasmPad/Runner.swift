@@ -38,24 +38,28 @@ class Runner: ObservableObject {
             )
             .store(in: &cancellables)
         execution
-            .mapError { _ -> Error in }
-            .map { compilerAPI.compile(code: $0) }
-            .switchToLatest()
-            .tryMap { [unowned self] in
-                try self.linkObjects(["/tmp/main.o": $0])
+            .map { code in
+                compilerAPI.compile(code: code)
+                    .tryMap { [unowned self] in
+                        try self.linkObjects(["/tmp/main.o": $0])
+                    }
+                    .switchToLatest()
+                    .flatMap {
+                        WebAssembly.runWasm($0)
+                            .mapError { _ -> Error in }
+                    }
+                    .eraseToAnyPublisher()
+                    .map { _ in return Result<Void, Error>.success(()) }
+                    .catch { error in Just(.failure(error)) }
             }
             .switchToLatest()
-            .flatMap {
-                WebAssembly.runWasm($0).mapError { _ -> Error in }
-            }
-            .eraseToAnyPublisher()
-            .map { _ in return Result<Void, Error>.success(()) }
-            .catch { error in Just(.failure(error)) }
             .sink(receiveValue: { result in
                 switch result {
                 case .success: break
                 case .failure(let error):
-                    console.error(String(describing: error))
+                    let string = String(describing: error)
+                    EventBus.stderr.send(string)
+                    console.error(string)
                 }
                 self._isRunning = false
             })

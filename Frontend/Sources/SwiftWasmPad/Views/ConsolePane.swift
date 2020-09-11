@@ -16,6 +16,11 @@ class LogCollector: ObservableObject {
                 self?.logStorage.append(Line(value: output))
             })
             .store(in: &cancellables)
+        EventBus.stderr
+            .sink(receiveValue: { [weak self] output in
+                self?.logStorage.append(Line(value: output))
+            })
+            .store(in: &cancellables)
         EventBus.flush
             .sink(receiveValue: { [weak self] in
                 self?.logStorage = []
