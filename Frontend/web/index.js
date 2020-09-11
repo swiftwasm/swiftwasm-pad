@@ -31,13 +31,8 @@ const startWasiTask = async () => {
     return originalWriteSync(fd, buffer, offset, length, position);
   };
 
-  wasmFs.fs.mkdirSync("/tmp", 0o777);
-
   const wasi = new WASI({
     args: [], env: {},
-    preopenDirectories: {
-      "/tmp": "/tmp"
-    },
     bindings: {
       ...WASI.defaultBindings,
       fs: wasmFs.fs,
