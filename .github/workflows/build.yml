@@ -21,8 +21,9 @@ jobs:
     - name: Build Frontend
       working-directory: Frontend
       run: |
+        apt install -y wabt binaryen
         npm install
-        npm run build
+        npm run build:prod
     - name: Upload Frontend artifact
       uses: actions/upload-artifact@v2
       with:
@@ -39,7 +40,7 @@ jobs:
         name: Frontend
     - name: Deploy to Netlify
       run: |
-        npx netlify-cli deploy --dir=./dist
+        npx netlify-cli deploy --dir=./Frontend
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
