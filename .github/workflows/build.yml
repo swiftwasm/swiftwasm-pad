@@ -21,7 +21,7 @@ jobs:
     - name: Build Frontend
       working-directory: Frontend
       run: |
-        apt install -y wabt binaryen
+        brew install wabt binaryen
         npm install
         npm run build:prod
     - name: Upload Frontend artifact
