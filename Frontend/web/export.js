@@ -6,15 +6,12 @@ import Worker from "./index.worker.js"
 
 export class SwiftWasmPadExport {
 
-  constructor(sharedFs, instance, module) {
+  constructor(sharedFs) {
     this.CodeMirror = CodeMirror;
     this.outputHook = null;
-    this.theModule = module;
-    this.theInstance = instance;
     this.sharedFs = sharedFs;
     this.sharedLibrary = fetch("library.so.wasm")
     this.linkerWorker = new Worker();
-    this.linkerWorker.postMessage({ eventType: "setModule", value: module });
   }
 
   createArrayBufferFromSwiftArray(ptr, length) {
@@ -28,8 +25,10 @@ export class SwiftWasmPadExport {
     this.outputHook = hookFn;
   }
 
-  setInstance(instance) {
+  setInstance(instance, module) {
     this.theInstance = instance; 
+    this.theModule = module;
+    this.linkerWorker.postMessage({ eventType: "setModule", value: module });
   }
 
   _triggerDebugger() {
