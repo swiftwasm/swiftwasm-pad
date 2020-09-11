@@ -1,4 +1,4 @@
-name: Build
+name: Build and deploy
 on:
   push: {}
 jobs:
@@ -28,6 +28,22 @@ jobs:
       with:
         name: Frontend
         path: Frontend/dist
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    name: Deploy artifacts
+    steps:
+    - name: Download Frontend artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: Frontend
+    - name: Deploy to Netlify
+      run: |
+        npm install netlify-cli -g
+        netlify deploy --prod -d dist -a ${NETLIFY_AUTH_TOKEN} -s ${NETLIFY_SITE_ID}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
   build-frontend-docker-image:
     runs-on: ubuntu-latest
     name: Build Frontend Docker image
