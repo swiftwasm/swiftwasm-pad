@@ -7,7 +7,7 @@ let package = Package(
         .executable(name: "SwiftWasmPad", targets: ["SwiftWasmPad"]),
     ],
     dependencies: [
-        .package(name: "JavaScriptKit", url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.5.0"),
+        .package(name: "JavaScriptKit", url: "https://github.com/swiftwasm/JavaScriptKit", .exact("0.5.0")),
         .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .branch("main")),
         .package(name: "ChibiLink", url: "https://github.com/kateinoigakukun/chibi-link", .branch("master")),
     ],
