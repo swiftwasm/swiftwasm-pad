@@ -40,7 +40,7 @@ jobs:
         name: Frontend
     - name: Deploy to Netlify
       run: |
-        npx netlify-cli deploy --dir=./Frontend
+        npx netlify-cli deploy --dir=.
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
