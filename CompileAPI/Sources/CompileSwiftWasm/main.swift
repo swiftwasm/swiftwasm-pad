@@ -146,13 +146,18 @@ let toolchain = Toolchain(
     previewStub: PreviewStub(root: previewStub)
 )
 
+struct LambdaError: Error, CustomStringConvertible {
+    var description: String
+}
+
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result<ByteBuffer, Error> {
         do { return try toolchain.emitObject(for: request.mainCode) }
         catch let error as CompileError {
             let encoder = JSONEncoder()
             let data = try encoder.encode(error)
-            return ByteBuffer(data: data)
+            let jsonStr = String(decoding: data, as: Unicode.UTF8.self)
+            throw LambdaError(description: jsonStr)
         }
     }
     completion(result)
