@@ -5,12 +5,6 @@ struct Request: Codable {
     let mainCode: String
 }
 
-struct Response: Codable {
-    let stdout: String
-    let stderr: String
-    let exitCode: Int32
-}
-
 struct CompilerOutputHandler<In: Decodable>: LambdaHandler {
     typealias In = In
     typealias Out = ByteBuffer
@@ -72,7 +66,7 @@ struct PreviewStub {
     }
 }
 
-struct CompileError: Error {
+struct CompileError: Error, Codable {
     let stderr: String
     let statusCode: Int32
 }
@@ -130,7 +124,7 @@ struct Toolchain {
         process.waitUntilExit()
 
         guard process.terminationStatus == 0 else {
-            let stderrData = stderrPipe.fileHandleForWriting.readDataToEndOfFile()
+            let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
             let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
             throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
         }
@@ -153,8 +147,13 @@ let toolchain = Toolchain(
 )
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
-    let result = Result {
-        try toolchain.emitObject(for: request.mainCode)
+    let result = Result<ByteBuffer, Error> {
+        do { return try toolchain.emitObject(for: request.mainCode) }
+        catch let error as CompileError {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(error)
+            return ByteBuffer(data: data)
+        }
     }
     completion(result)
 }
