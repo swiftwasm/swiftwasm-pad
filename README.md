@@ -48,4 +48,4 @@ The object file will be linked with prebuilt library on browser.
 
 Frontend web application sends requests to CompilerAPI, link compiled object files and shared library and run linked executable wasm.
 `library.so.wasm` is the shared library combined with Swift Standard Library, Tokamak and JavaScriptKit. The library is built by [`./PreviewSystem/build-script.sh`](https://github.com/kateinoigakukun/swiftwasm-pad/blob/master/PreviewSystem/build-script.sh)
-This frontend application uses WebAssembly linker implemented by Swift named [chibi-link](https://github.com/kateinoigakukun/chibi-link/) to reduce CompileAPI's load and also reduce transfer data size.
+This frontend application uses WebAssembly linker implemented by Swift named [chibi-link](https://github.com/kateinoigakukun/chibi-link/) to reduce CompileAPI's load and also reduce transfer data size. The linker is executed in Web Worker to avoid blocking UI.
