@@ -45,7 +45,8 @@ module.exports = (mode) => {
         swift_build: path.resolve(projectConfig.TOOLCHAIN, "usr/bin/swift-build"),
         target: 'SwiftWasmPad',
         dist: outputPath,
-        config: mode == 'development' ? 'debug' : 'release'
+        config: mode == 'development' ? 'debug' : 'release',
+        buildOptions: mode == 'development' ? [] : ['-Xswiftc', '-Osize']
       }),
       new CopyPlugin(
         [
