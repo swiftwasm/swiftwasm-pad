@@ -14,12 +14,6 @@ export class SwiftWasmPadExport {
     this.linkerWorker = new Worker();
   }
 
-  createArrayBufferFromSwiftArray(ptr, length) {
-    const memory = this.theInstance.exports.memory;
-    const memBuffer = new Uint8Array(memory.buffer);
-    return memBuffer.slice(ptr, ptr + length);
-  }
-
   installHook(hookFn) {
     // outputHook(descriptor: number, buffer: string): void
     this.outputHook = hookFn;
