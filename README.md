@@ -35,6 +35,7 @@ $ npm run start
 $ cd CompileAPI
 $ export LOCAL_LAMBDA_SERVER_ENABLED=true
 $ export LAMBDA_PREVIEW_STUB_PACKAGE=$(pwd)/../PreviewSystem/distribution/PreviewStub
+$ export LAMBDA_SWIFTC=$(dirname $(pwd))/.toolchain/darwin/$(cat ../.swift-version)/usr/bin/swiftc
 $ swift run CompileSwiftWasm
 ```
 
