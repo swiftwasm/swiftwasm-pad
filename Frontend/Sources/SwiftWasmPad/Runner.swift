@@ -78,25 +78,4 @@ class Runner: ObservableObject {
         }
         return linker.link(Array(inputs.keys) + [sharedLibrary])
     }
-
-    class OutputWriter: OutputByteStream {
-        private(set) var bytes: [UInt8] = []
-        private(set) var currentOffset: Int = 0
-
-        func write(_ bytes: [UInt8], at offset: Int) throws {
-            for index in offset ..< (offset + bytes.count) {
-                self.bytes[index] = bytes[index - offset]
-            }
-        }
-
-        func write(_ bytes: ArraySlice<UInt8>) throws {
-            self.bytes.append(contentsOf: bytes)
-            currentOffset += bytes.count
-        }
-
-        func writeString(_ value: String) throws {
-            bytes.append(contentsOf: value.utf8)
-            currentOffset += value.utf8.count
-        }
-    }
 }
