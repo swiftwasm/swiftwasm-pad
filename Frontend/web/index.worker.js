@@ -69,8 +69,20 @@ onmessage = event => {
           _provide_mode: () => { return 0 /* linker mode */; },
           writeOutput: (ptr, length) => {
             const memory = theInstance.exports.memory;
-            const uint8Array = new Uint8Array(memory.buffer, ptr, length).slice();
-            postMessage(uint8Array, [uint8Array.buffer])
+            const uint8Array = new Uint8Array(memory.buffer, ptr, length);
+            try {
+              postMessage(uint8Array, [uint8Array.buffer])
+            } catch (error) {
+              if (!(error instanceof TypeError) ||
+                  !error.message.includes("Cannot transfer a WebAssembly.Memory")) {
+                throw error;
+              }
+              // Workaround:
+              // Copy the buffer because WebKit doesn't allow to transfer
+              // WebAssembly.Memory directly.
+              const copiedArray = uint8Array.slice();
+              postMessage(copiedArray, [copiedArray.buffer])
+            }
           },
         }
       };
