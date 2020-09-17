@@ -1,8 +1,8 @@
 {
   "name": "swiftwasm-pad",
   "dependencies": {
-    "@wasmer/wasi": "https://github.com/kateinoigakukun/wasmer-js/releases/download/v0.11.3-alpha.2/wasmer-wasi-0.11.2.tgz",
-    "@wasmer/wasmfs": "https://github.com/kateinoigakukun/wasmer-js/releases/download/v0.11.3-alpha.2/wasmer-wasmfs-0.11.2.tgz",
+    "@wasmer/wasi": "^0.12.0",
+    "@wasmer/wasmfs": "^0.12.0",
     "codemirror": "^5.57.0",
     "javascript-kit-swift": "0.5.0",
     "path-browserify": "^1.0.1"
