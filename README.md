@@ -4,6 +4,9 @@
 
 swiftwasm-pad is a online playground to help developers learn about Swift on Web.
 
+[https://swiftwasm-pad.netlify.app](https://swiftwasm-pad.netlify.app)
+
+[![](./readme/demo.gif)](https://swiftwasm-pad.netlify.app)
 
 - [`./CompileAPI`](https://github.com/kateinoigakukun/swiftwasm-pad/tree/master/CompileAPI) - A backend service which compiles `.swift` into WebAssembly object file. Implemented by [Swift AWS Lambda Runtime](https://github.com/swift-server/swift-aws-lambda-runtime).
 
