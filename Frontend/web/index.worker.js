@@ -73,8 +73,7 @@ onmessage = event => {
             try {
               postMessage(uint8Array, [uint8Array.buffer])
             } catch (error) {
-              if (!(error instanceof TypeError) ||
-                  !error.message.includes("Cannot transfer a WebAssembly.Memory")) {
+              if (!(error instanceof TypeError)) {
                 throw error;
               }
               // Workaround:
