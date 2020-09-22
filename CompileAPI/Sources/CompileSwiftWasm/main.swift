@@ -1,5 +1,6 @@
 import AWSLambdaRuntime
 import NIO
+import Foundation
 
 struct Request: Codable {
     let mainCode: String

@@ -1,3 +1,6 @@
+import Foundation
+import NIO
+
 struct Toolchain {
     
     enum Error: Swift.Error {
