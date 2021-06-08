@@ -39,7 +39,7 @@ echo "-------------------------------------------------------------------------"
 "$preview_dir/../scripts/install-toolchain.sh"
 
 echo "-------------------------------------------------------------------------"
-echo "building PreviewStub pakcage"
+echo "building PreviewStub package"
 echo "-------------------------------------------------------------------------"
 
 rm -rf $stub_package_build_dir
