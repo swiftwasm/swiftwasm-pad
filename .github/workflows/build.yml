@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Select latest Xcode
-      run: sudo xcode-select --switch /Applications/Xcode_12_beta.app/Contents/Developer/
+      run: sudo xcode-select --switch /Applications/Xcode_12.app/Contents/Developer/
     - name: Build PreviewSystem
       run: ./PreviewSystem/build-script.sh
     - name: Upload PreviewSystem artifact

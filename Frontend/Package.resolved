@@ -5,9 +5,9 @@
         "package": "ChibiLink",
         "repositoryURL": "https://github.com/kateinoigakukun/chibi-link",
         "state": {
-          "branch": "master",
-          "revision": "49b39f8c0afe1b244b80301ad691dfb8d9500eb2",
-          "version": null
+          "branch": null,
+          "revision": "ef8618312cbb857a0b0dc9307b5f0d5e7b24f96f",
+          "version": "1.0.0"
         }
       },
       {
@@ -41,9 +41,9 @@
         "package": "Tokamak",
         "repositoryURL": "https://github.com/TokamakUI/Tokamak",
         "state": {
-          "branch": "main",
-          "revision": "ba7af1d014201c9bcac09e934af158e81136a74c",
-          "version": null
+          "branch": null,
+          "revision": "75d178e5ddc1ec80e79b38de3771a400d0f6bf9b",
+          "version": "0.3.0"
         }
       }
     ]
