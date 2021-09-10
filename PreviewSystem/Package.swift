@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "ModuleBuilder",
     dependencies: [
-        .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .branch("main")),
+        .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .revision("ba7af1d014201c9bcac09e934af158e81136a74c")),
     ],
     targets: [
         .target(name: "PreviewStub", dependencies: [

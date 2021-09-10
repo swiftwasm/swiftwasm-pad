@@ -32,7 +32,7 @@
         "package": "Tokamak",
         "repositoryURL": "https://github.com/TokamakUI/Tokamak",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "ba7af1d014201c9bcac09e934af158e81136a74c",
           "version": null
         }
