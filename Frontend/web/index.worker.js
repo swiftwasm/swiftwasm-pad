@@ -70,18 +70,11 @@ onmessage = event => {
           writeOutput: (ptr, length) => {
             const memory = theInstance.exports.memory;
             const uint8Array = new Uint8Array(memory.buffer, ptr, length);
-            try {
-              postMessage(uint8Array, [uint8Array.buffer])
-            } catch (error) {
-              if (!(error instanceof TypeError)) {
-                throw error;
-              }
-              // Workaround:
-              // Copy the buffer because WebKit doesn't allow to transfer
-              // WebAssembly.Memory directly.
-              const copiedArray = uint8Array.slice();
-              postMessage(copiedArray, [copiedArray.buffer])
-            }
+            // Workaround:
+            // Copy the buffer because it's not allow to transfer
+            // WebAssembly.Memory directly.
+            const copiedArray = uint8Array.slice();
+            postMessage(copiedArray, [copiedArray.buffer])
           },
         }
       };
