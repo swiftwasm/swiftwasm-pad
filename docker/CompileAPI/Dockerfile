@@ -1,4 +1,4 @@
-FROM swift:5.2 AS preview-stub-builder
+FROM swift:5.6 AS preview-stub-builder
 RUN apt update && apt install wget -y
 WORKDIR /workdir
 
@@ -8,7 +8,7 @@ COPY scripts /workdir/scripts
 COPY PreviewSystem /workdir/PreviewSystem
 RUN /workdir/PreviewSystem/build-script.sh
 
-FROM swift:5.2-amazonlinux2
+FROM swift:5.6-amazonlinux2
 
 ARG SWIFT_TAG=swift-wasm-5.3-SNAPSHOT-2020-08-28-a
 RUN yum -y install zip wget

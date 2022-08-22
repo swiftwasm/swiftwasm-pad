@@ -50,7 +50,15 @@ struct LambdaError: Error, CustomStringConvertible {
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
     let result = Result<ByteBuffer, Error> {
-        do { return try toolchain.emitObject(for: request.mainCode) }
+        do {
+            let object = try toolchain.emitObject(for: request.mainCode)
+            if ProcessInfo.processInfo.environment["LOCAL_LAMBDA_SERVER_ENABLED"] == nil {
+                // AWS API Gateway rejects binary response, so encode it and decode at the gateway
+                return ByteBuffer(data: object.base64EncodedData())
+            } else {
+                return ByteBuffer(data: object)
+            }
+        }
         catch let error as CompileError {
             let encoder = JSONEncoder()
             let data = try encoder.encode(error)

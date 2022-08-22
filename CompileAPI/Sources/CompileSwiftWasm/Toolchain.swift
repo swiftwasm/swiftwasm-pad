@@ -23,7 +23,7 @@ struct Toolchain {
         tempDirectory.appendingPathComponent("main.o")
     }
 
-    func emitObject(for code: String) throws -> ByteBuffer {
+    func emitObject(for code: String) throws -> Data {
         let tempInput = tempDirectory.appendingPathComponent("main.swift")
 
         var arguments = [
@@ -58,8 +58,6 @@ struct Toolchain {
             let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
             throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
         }
-        let binary = try Data(contentsOf: tempOutput)
-        let bytes = ByteBuffer(data: binary.base64EncodedData())
-        return bytes
+        return try Data(contentsOf: tempOutput)
     }
 }
