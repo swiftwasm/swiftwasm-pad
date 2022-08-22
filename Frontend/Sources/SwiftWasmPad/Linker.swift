@@ -1,9 +1,9 @@
 import JavaScriptKit
-import CombineShim
+import OpenCombineShim
 
 class Linker {
     private let worker = swiftExport.linkerWorker.object!
-    private var listener: (Result<JSObjectRef, Error>) -> Void = { _ in }
+    private var listener: (Result<JSObject, Error>) -> Void = { _ in }
 
     init() {
         worker.onmessage = .function(JSClosure { [weak self] arguments in
@@ -18,20 +18,19 @@ class Linker {
         })
     }
     
-    func writeInput(_ filename: String, buffer: JSObjectRef) {
-        _ = worker.postMessage!(
-            [
-                "eventType": "writeInput",
-                "value": [
-                    "filename": filename,
-                    "buffer": buffer,
-                ]
-            ],
-            [buffer]
-        )
+    func writeInput(_ filename: String, buffer: JSObject) {
+        let value: [String: ConvertibleToJSValue] = [
+                "filename": filename,
+                "buffer": buffer,
+        ]
+        let param: [String: ConvertibleToJSValue] = [
+            "eventType": "writeInput",
+            "value": value.jsValue,
+        ]
+        _ = worker.postMessage!(param.jsValue, [buffer])
     }
 
-    func link(_ filenames: [String]) -> Future<JSObjectRef, Error> {
+    func link(_ filenames: [String]) -> Future<JSObject, Error> {
         return Future { [weak self] resolver in
             self?.listener = { event in
                 resolver(event.map { $0.data.object! })
@@ -53,7 +52,7 @@ import ChibiLink
 #if canImport(Darwin)
 import Darwin
 #else
-import Glibc
+import WASILibc
 let SEEK_SET: Int32 = 0
 let ENOENT: Int32 = 2
 let EACCES: Int32 = 13

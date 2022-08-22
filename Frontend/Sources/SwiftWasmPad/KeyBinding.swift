@@ -4,7 +4,7 @@ class KeyBinding {
     enum Event: Equatable {
         case ctrlAndEnter
 
-        init?(keyboardEvent event: JSObjectRef) {
+        init?(keyboardEvent event: JSObject) {
             let isCtrlKey = event.ctrlKey.boolean!
             let isMetaKey = event.metaKey.boolean!
             let isEnter = event.keyCode.number == 13
@@ -17,7 +17,7 @@ class KeyBinding {
     }
     
     typealias Handler = (Event) -> Void
-    private var eventTarget: JSObjectRef
+    private var eventTarget: JSObject
     private var handlers: [Handler] = []
     
     private lazy var jsListener = JSClosure { [weak self] args in
@@ -37,7 +37,7 @@ class KeyBinding {
         handlers.append(handler)
     }
 
-    init(on window: JSObjectRef) {
+    init(on window: JSObject) {
         self.eventTarget = window
         _ = window.addEventListener!("keydown", jsListener)
     }
@@ -49,8 +49,9 @@ class KeyBinding {
 }
 
 import TokamakDOM
+@_spi(TokamakCore) import TokamakCore
 
-let keyBinding = KeyBinding(on: JSObjectRef.global)
+let keyBinding = KeyBinding(on: JSObject.global)
 
 extension View {
     func bindKey(_ event: KeyBinding.Event, _ handler: @escaping () -> Void) -> some View {

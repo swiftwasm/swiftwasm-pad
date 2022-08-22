@@ -6,7 +6,7 @@ struct ShareButton: View {
     let action: () -> Void
 
     var body: some View {
-        let attributes = [
+        let attributes: [HTMLAttribute: String] = [
             "id": "share-button",
             "className": "button",
         ]
@@ -15,7 +15,7 @@ struct ShareButton: View {
         }
     }
     
-    func onClick(_: JSObjectRef) {
+    func onClick(_: JSObject) {
         action()
     }
 }

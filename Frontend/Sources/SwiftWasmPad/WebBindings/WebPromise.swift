@@ -1,7 +1,7 @@
 import JavaScriptKit
 
-public class Promise: JSValueConvertible {
-    let ref: JSObjectRef
+public class Promise: ConvertibleToJSValue {
+    let ref: JSObject
     public init?(_ value: JSValue) {
         guard let ref = value.object else {
             return nil
@@ -35,12 +35,12 @@ public class Promise: JSValueConvertible {
         return Promise(result)!
     }
 
-    public func jsValue() -> JSValue {
+    public var jsValue: JSValue {
         return .object(ref)
     }
 }
 
-import CombineShim
+import OpenCombineShim
 
 struct JSError: Error {
     let value: JSValue

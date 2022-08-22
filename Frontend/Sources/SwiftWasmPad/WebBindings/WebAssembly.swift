@@ -1,10 +1,10 @@
 import JavaScriptKit
-import CombineShim
+import OpenCombineShim
 
 class WebAssembly {
-    private static let Uint8Array = JSObjectRef.global.Uint8Array.function!
+    private static let Uint8Array = JSObject.global.Uint8Array.function!
 
-    static func runWasm(_ arrayBuffer: JSObjectRef) -> AnyPublisher<Void, Never> {
+    static func runWasm(_ arrayBuffer: JSObject) -> AnyPublisher<Void, Never> {
         let promise = swiftExport.execWasm!(arrayBuffer).object!
         return Future<Void, Never> { resolver in
             _ = promise.finally!(JSClosure { _ in

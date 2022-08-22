@@ -1,7 +1,7 @@
 import TokamakStaticHTML
-import TokamakCore
+@_spi(TokamakCore) import TokamakCore
 import JavaScriptKit
-import CombineShim
+import OpenCombineShim
 
 struct EditorPane: View {
     
@@ -14,8 +14,8 @@ struct EditorPane: View {
             self.onRun = onRun
         }
 
-        var editorRef: JSObjectRef?
-        var observedNodeRef: JSObjectRef?
+        var editorRef: JSObject?
+        var observedNodeRef: JSObject?
         
         lazy var onChange = JSClosure { [weak self] _ in
             guard let editor = self?.editorRef else {
@@ -56,7 +56,7 @@ struct EditorPane: View {
             console.log("\(#function) is called before mounted")
             return
         }
-        let options: [String: JSValueConvertible] = [
+        let options: [String: ConvertibleToJSValue] = [
             "autoCloseBrackets": true,
             "matchBrackets": true,
             "tabSize": 2,
@@ -68,7 +68,7 @@ struct EditorPane: View {
         ]
         EventBus.mounted.first()
             .sink(receiveValue: {
-                let editor = CodeMirror.new(mountTarget, options)
+                let editor = CodeMirror.new(mountTarget, options.jsValue)
                 state.editorRef = editor
                 _ = editor.on!("change", state.onChange)
                 _ = editor.focus!()

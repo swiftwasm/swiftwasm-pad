@@ -1,4 +1,4 @@
-import CombineShim
+import OpenCombineShim
 import JavaScriptKit
 
 struct MessageError: Error {
@@ -23,9 +23,9 @@ struct CompileError: Error, Codable, CustomStringConvertible {
 }
 
 class CompilerAPI {
-    func compile(code: String) -> AnyPublisher<JSObjectRef, Error> {
+    func compile(code: String) -> AnyPublisher<JSObject, Error> {
         let body = JSON.stringify(["mainCode": code])
-        let options: [String: JSValueConvertible] = [
+        let options: [String: ConvertibleToJSValue] = [
             "mode": "cors",
             "method": "POST",
             "body": body,
@@ -70,7 +70,7 @@ class CompilerAPI {
             
     }
     
-    func sharedLibrary() -> AnyPublisher<JSObjectRef, Error> {
+    func sharedLibrary() -> AnyPublisher<JSObject, Error> {
         return futurefy(Promise(swiftExport.sharedLibrary)!)
             .flatMap { response -> Future<JSValue, JSError> in
                 let promise = response.object!.arrayBuffer!()

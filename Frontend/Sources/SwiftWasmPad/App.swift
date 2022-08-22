@@ -1,5 +1,5 @@
 import TokamakDOM
-import CombineShim
+import OpenCombineShim
 import JavaScriptKit
 import struct TokamakStaticHTML.HTML
 
@@ -28,17 +28,17 @@ struct Editor: View {
     }
 
     func copyShareLink() {
-        let encodeURIComponent = JSObjectRef.global.encodeURIComponent.function!
+        let encodeURIComponent = JSObject.global.encodeURIComponent.function!
         let encodedCode = encodeURIComponent(code).string!
         let newPath = "\(location.pathname)?code=\(encodedCode)"
-        let Object = JSObjectRef.global.Object.function!
-        _ = JSObjectRef.global.history.object!.replaceState!(Object.new(), "", newPath)
-        let promise = JSObjectRef.global.navigator.object!
+        let Object = JSObject.global.Object.function!
+        _ = JSObject.global.history.object!.replaceState!(Object.new(), "", newPath)
+        let promise = JSObject.global.navigator.object!
             .clipboard.object!.writeText!(location.href)
         Promise(promise)!
             .catch { console.error($0) }
             .then { _ in
-                _ = JSObjectRef.global.alert!("URL copied to clipboard")
+                _ = JSObject.global.alert!("URL copied to clipboard")
                 return .undefined
             }
     }
@@ -80,10 +80,9 @@ MyApp.main()
 
 
 func queryCode() -> String? {
-    let URLSearchParams = JSObjectRef.global.URLSearchParams.function!
+    let URLSearchParams = JSObject.global.URLSearchParams.function!
     let params = URLSearchParams.new(location.search)
-    let getter = params.get("get").function!
-    let maybeCode = getter.apply(this: params, arguments: "code")
+    let maybeCode = params.get!("code")
     return maybeCode.string
 }
 
@@ -100,7 +99,7 @@ struct EditorApp: App {
 }
 
 func removeLoader() {
-  let document = JSObjectRef.global.document.object!
+  let document = JSObject.global.document.object!
   _ = document.getElementById!("loader").object!
     .parentNode.object!
     .removeChild!(document.getElementById!("loader"))

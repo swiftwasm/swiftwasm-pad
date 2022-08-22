@@ -1,3 +1,3 @@
 import JavaScriptKit
 
-let swiftExport = JSObjectRef.global.swiftExports.object!
+let swiftExport = JSObject.global.swiftExports.object!

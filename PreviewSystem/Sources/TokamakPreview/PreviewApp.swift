@@ -7,7 +7,7 @@ public protocol PreviewApp: App {}
 extension PreviewApp {
   public static func main() {
     let app = Self()
-    let document = JSObjectRef.global.document.object!
+    let document = JSObject.global.document.object!
     let div = document.createElement!("div").object!
     guard let preview = document.getElementById!("preview-host").object else {
       fatalError("Failed to get preview host")

@@ -1,9 +1,9 @@
 import JavaScriptKit
 
 struct DataBuffer {
-    private let buffer: JSObjectRef
+    private let buffer: JSObject
 
-    init(arrayBuffer: JSObjectRef) {
+    init(arrayBuffer: JSObject) {
         self.buffer = arrayBuffer
     }
 
@@ -17,7 +17,7 @@ struct DataBuffer {
 
     var byteLength: Int { Int(buffer.byteLength.number!) }
 
-    static let Uint8Array = JSObjectRef.global.Uint8Array.function!
+    static let Uint8Array = JSObject.global.Uint8Array.function!
 
     var uint8: [UInt8] {
         let uint8Buffer = Self.Uint8Array.new(buffer)

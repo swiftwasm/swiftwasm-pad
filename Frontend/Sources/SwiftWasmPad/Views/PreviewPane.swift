@@ -1,12 +1,12 @@
 import TokamakDOM
 import TokamakStaticHTML
-import CombineShim
+import OpenCombineShim
 import JavaScriptKit
 
 class Previewer: ObservableObject {
     var cancellables: [AnyCancellable] = []
     
-    var previewHost: JSObjectRef?
+    var previewHost: JSObject?
 
     init() {
         EventBus.flush

@@ -1,8 +1,9 @@
 import TokamakDOM
+@_spi(TokamakCore) import TokamakCore
 import JavaScriptKit
 
 struct _AttributeSetterView<Content: View>: View {
-    @State var targetRef: JSObjectRef? = nil
+    @State var targetRef: JSObject? = nil
     let content: Content
     let key: String
     let value: String
@@ -14,11 +15,11 @@ struct _AttributeSetterView<Content: View>: View {
             ._onMount {
                 var newValue = value
                 if append {
-                    if let oldValue = targetRef?.get(key).string {
+                    if let oldValue = targetRef?[key].string {
                         newValue += " " + oldValue
                     }
                 }
-                targetRef?.set(key, .string(newValue))
+                targetRef?[key] = .string(newValue)
             }
     }
 }

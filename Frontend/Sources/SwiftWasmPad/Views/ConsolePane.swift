@@ -1,6 +1,6 @@
 import TokamakDOM
 import TokamakStaticHTML
-import CombineShim
+import OpenCombineShim
 
 class LogCollector: ObservableObject {
     struct Line: Identifiable {

@@ -1,4 +1,4 @@
-import CombineShim
+import OpenCombineShim
 import JavaScriptKit
 import ChibiLink
 
@@ -72,7 +72,7 @@ class Runner: ObservableObject {
         execution.send(code)
     }
 
-    func linkObjects(_ inputs: [String: JSObjectRef]) throws -> Future<JSObjectRef, Error> {
+    func linkObjects(_ inputs: [String: JSObject]) throws -> Future<JSObject, Error> {
         for (filename, arrayBuffer) in inputs {
             linker.writeInput(filename, buffer: arrayBuffer)
         }

@@ -9,7 +9,7 @@ struct RunButton: View {
     var runner: Runner
 
     var body: some View {
-        let attributes = [
+        let attributes: [HTMLAttribute: String] = [
             "id": "run-button",
             "className": "button \(runner.isRunnable ? "" : "disabled-button")",
         ]
@@ -18,7 +18,7 @@ struct RunButton: View {
         }
     }
     
-    func onClick(_: JSObjectRef) {
+    func onClick(_: JSObject) {
         action()
     }
 }
