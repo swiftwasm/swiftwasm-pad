@@ -74,17 +74,6 @@ rm -f $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*~partial.swiftd
 rm -f $(find $stub_package_build_dir/wasm32-unknown-wasi -name "*.d")
 
 echo "-------------------------------------------------------------------------"
-echo "workaround: copy patched modulemap into PreviewStub package"
-echo "-------------------------------------------------------------------------"
-
-cat <<EOS > $stub_package_build_dir/checkouts/JavaScriptKit/Sources/_CJavaScriptKit/include/module.modulemap
-module _CJavaScriptKit {
-    header "_CJavaScriptKit.h"
-    export *
-}
-EOS
-
-echo "-------------------------------------------------------------------------"
 echo "linking shared object library"
 echo "-------------------------------------------------------------------------"
 
@@ -106,16 +95,17 @@ link-shared-object-library() {
     $link_objects \
     $TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1.o \
     $TOOLCHAIN/usr/lib/swift_static/wasi/wasm32/swiftrt.o \
-    $TOOLCHAIN/usr/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
+    $TOOLCHAIN/usr/lib/clang/13.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
     $workdir/swiftSwiftOnoneSupport/*.o \
     -L$TOOLCHAIN/usr/lib/swift_static/wasi \
     -L$TOOLCHAIN/usr/share/wasi-sysroot/usr/lib/swift \
     -L$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi \
-    -lswiftCore -lswiftImageInspectionShared -lswiftWasiPthread \
-    -licuuc -licudata -ldl -lc++ -lc++abi -lc -lm -lwasi-emulated-mman \
+    -lswiftSwiftOnoneSupport -lswiftWasiPthread \
+    -ldl -lc++ -lm \
+    -lwasi-emulated-mman -lwasi-emulated-signal -lwasi-emulated-process-clocks \
     --error-limit=0 \
     --no-gc-sections \
-    --no-threads \
+    --threads=1 \
     --allow-undefined \
     --relocatable \
     -o "$shared_object_library"

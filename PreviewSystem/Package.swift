@@ -1,11 +1,11 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.6
 
 import PackageDescription
 
 let package = Package(
     name: "ModuleBuilder",
     dependencies: [
-        .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .revision("ba7af1d014201c9bcac09e934af158e81136a74c")),
+        .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .exact("0.10.1")),
     ],
     targets: [
         .target(name: "PreviewStub", dependencies: [
