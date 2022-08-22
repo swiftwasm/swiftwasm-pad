@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eu
-scripts_dir="$(cd "$(dirname $0)" && pwd)"
+scripts_dir="$(cd "$(dirname ${BASH_SOURCE:-$0})" && pwd)"
 toolchain_dir="$scripts_dir/../.toolchain"
 
 export SWIFT_TAG=$(cat $scripts_dir/../.swift-version)
