@@ -18,6 +18,22 @@ struct Toolchain {
             .appendingPathComponent("wasi-sysroot")
     }
 
+    private func invokeSwiftc(arguments: [String]) throws {
+        let process = Process()
+        let stderrPipe = Pipe()
+        process.launchPath = swiftCompiler.path
+        process.arguments = arguments
+        process.standardError = stderrPipe
+        process.launch()
+        process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+            let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
+            throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
+        }
+    }
+
     func emitObject(for code: String) throws -> Data {
         let tempDirectory: URL = makeTemporalyDirectory()
         let tempInput = tempDirectory.appendingPathComponent("main.swift")
@@ -43,19 +59,7 @@ struct Toolchain {
             throw Error.failedToEncodeCode
         }
         try inputData.write(to: tempInput)
-        let process = Process()
-        let stderrPipe = Pipe()
-        process.launchPath = swiftCompiler.path
-        process.arguments = arguments
-        process.standardError = stderrPipe
-        process.launch()
-        process.waitUntilExit()
-
-        guard process.terminationStatus == 0 else {
-            let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
-            let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
-            throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
-        }
+        try invokeSwiftc(arguments: arguments)
         return try Data(contentsOf: tempOutput)
     }
 
@@ -74,19 +78,7 @@ struct Toolchain {
             throw Error.failedToEncodeCode
         }
         try inputData.write(to: tempInput)
-        let process = Process()
-        let stderrPipe = Pipe()
-        process.launchPath = swiftCompiler.path
-        process.arguments = arguments
-        process.standardError = stderrPipe
-        process.launch()
-        process.waitUntilExit()
-
-        guard process.terminationStatus == 0 else {
-            let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
-            let stderrStr = String(decoding: stderrData, as: Unicode.UTF8.self)
-            throw CompileError(stderr: stderrStr, statusCode: process.terminationStatus)
-        }
+        try invokeSwiftc(arguments: arguments)
         return try Data(contentsOf: tempOutput)
     }
 }
