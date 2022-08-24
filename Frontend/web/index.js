@@ -2,7 +2,7 @@ import "codemirror/theme/lucario.css"
 import "codemirror/lib/codemirror.css"
 import "./style.css"
 
-import { SwiftRuntime } from "javascript-kit-swift";
+import { SwiftRuntime } from "../.build/checkouts/JavaScriptKit/Sources/JavaScriptKit/Runtime/index.mjs";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 import * as path from "path-browserify";
@@ -66,8 +66,10 @@ const startWasiTask = async () => {
 
   const instance = await WebAssembly.instantiate(module, importObject);
   window.swiftExports.setInstance(instance, module);
+  wasi.setMemory(instance.exports.memory);
   swift.setInstance(instance);
-  wasi.start(instance);
+  instance.exports._initialize();
+  instance.exports.main();
 };
 
 startWasiTask().catch(console.error);

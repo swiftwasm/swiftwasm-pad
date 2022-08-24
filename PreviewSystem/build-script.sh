@@ -45,15 +45,10 @@ echo "-------------------------------------------------------------------------"
 rm -rf $stub_package_build_dir
 
 # Build stub package for WebAssembly target
-SWIFTPM_CUSTOM_BINDIR=$TOOLCHAIN/usr/bin \
-  "$TOOLCHAIN/usr/bin/swift" build \
+"$TOOLCHAIN/usr/bin/swift" build \
     --package-path "$preview_dir" \
     --triple wasm32-unknown-wasi \
-    -c "$build_config" -Xswiftc -Osize \
-    --sdk "$TOOLCHAIN/usr/share/wasi-sysroot" \
-    -Xcc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32" \
-    -Xswiftc -I"$TOOLCHAIN/usr/lib/swift/wasi/wasm32"
-
+    -c "$build_config" -Xswiftc -Osize
 
 mkdir -p $stub_package_build_dir
 cp -r $preview_dir/.build/wasm32-unknown-wasi/$build_config $stub_package_build_dir/wasm32-unknown-wasi
@@ -83,39 +78,57 @@ link-shared-object-library() {
       | grep -v "main.swift.o"
   )
 
+  local inputs=(
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1-reactor.o"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/wasm32/swiftrt.o"
+    "$TOOLCHAIN/usr/lib/clang/13.0.0/lib/wasi/libclang_rt.builtins-wasm32.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libswiftWasiPthread.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libswiftCore.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libswift_Concurrency.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libswiftSwiftOnoneSupport.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libswiftWASILibc.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libFoundation.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libBlocksRuntime.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libc.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libc++.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libc++abi.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libicuuc.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libicudata.a"
+    "$TOOLCHAIN/usr/lib/swift_static/wasi/libicui18n.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libwasi-emulated-mman.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libwasi-emulated-signal.a"
+    "$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/libwasi-emulated-process-clocks.a"
+  )
   local workdir=$(mktemp -d)
+  local linkfile="$workdir/LinkInputs.filelist"
 
   # Extract object files from libswiftSwiftOnoneSupport.a to force link
-  mkdir -p $workdir/swiftSwiftOnoneSupport
-  pushd $workdir/swiftSwiftOnoneSupport > /dev/null
-  "$TOOLCHAIN/usr/bin/llvm-ar" x $TOOLCHAIN/usr/lib/swift_static/wasi/libswiftSwiftOnoneSupport.a
-  popd > /dev/null
+  for obj in ${inputs[@]}; do
+    if [[ $obj == *.o ]]; then
+      echo $obj >> $linkfile
+    else
+      local obj_dir=$workdir/$(basename $obj)
+      mkdir -p $obj_dir
+      pushd $obj_dir > /dev/null
+      "$TOOLCHAIN/usr/bin/llvm-ar" x $obj
+      if [[ -f $obj_dir/ImageInspectionCOFF.cpp.o ]]; then
+        rm $obj_dir/ImageInspectionCOFF.cpp.o
+      fi
+      popd > /dev/null
+      echo $obj_dir/* >> $linkfile
+    fi
+  done
+  echo $link_objects >> $linkfile
 
+  set -ex
   "$TOOLCHAIN/usr/bin/wasm-ld" \
-    $link_objects \
-    $TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi/crt1.o \
-    $TOOLCHAIN/usr/lib/swift_static/wasi/wasm32/swiftrt.o \
-    $TOOLCHAIN/usr/lib/clang/13.0.0/lib/wasi/libclang_rt.builtins-wasm32.a \
-    $workdir/swiftSwiftOnoneSupport/*.o \
-    -L$TOOLCHAIN/usr/lib/swift_static/wasi \
-    -L$TOOLCHAIN/usr/share/wasi-sysroot/usr/lib/swift \
-    -L$TOOLCHAIN/usr/share/wasi-sysroot/lib/wasm32-wasi \
-    -lswiftSwiftOnoneSupport -lswiftWasiPthread \
-    -ldl -lc++ -lm \
-    -lwasi-emulated-mman -lwasi-emulated-signal -lwasi-emulated-process-clocks \
+    @$linkfile \
     --error-limit=0 \
     --no-gc-sections \
     --threads=1 \
-    --allow-undefined \
-    --relocatable \
+    --allow-undefined --whole-archive \
+    --relocatable --strip-debug \
     -o "$shared_object_library"
 }
 
 link-shared-object-library
-
-echo "-------------------------------------------------------------------------"
-echo "stripping debug info from shared object library"
-echo "-------------------------------------------------------------------------"
-
-swift run --package-path $tools_dir strip-debug $shared_object_library ${shared_object_library}-tmp
-mv ${shared_object_library}-tmp $shared_object_library

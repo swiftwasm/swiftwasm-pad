@@ -1,8 +1,9 @@
 import * as CodeMirror from "codemirror/lib/codemirror"
-import { SwiftRuntime } from "javascript-kit-swift";
+import { SwiftRuntime } from "../.build/checkouts/JavaScriptKit/Sources/JavaScriptKit/Runtime/index.mjs";
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 import Worker from "./index.worker.js"
+import { wrapWASI } from "./utils.js";
 
 export class SwiftWasmPadExport {
 
@@ -50,13 +51,16 @@ export class SwiftWasmPadExport {
     });
 
     const wasmBytes = new Uint8Array(arrayBuffer).buffer;
+    const wasiImport = wrapWASI(wasi)
     const { instance } = await WebAssembly.instantiate(wasmBytes, {
-      wasi_snapshot_preview1: wasi.wasiImport,
-      wasi_unstable: wasi.wasiImport,
+      wasi_snapshot_preview1: wasiImport,
+      wasi_unstable: wasiImport,
       javascript_kit: swift.importObjects(),
     });
 
+    wasi.setMemory(instance.exports.memory);
     swift.setInstance(instance);
-    wasi.start(instance);
+    instance.exports._initialize();
+    instance.exports.main();
   }
 }

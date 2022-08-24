@@ -9,7 +9,7 @@ let package = Package(
     dependencies: [
         .package(name: "JavaScriptKit", url: "https://github.com/swiftwasm/JavaScriptKit", .exact("0.15.0")),
         .package(name: "Tokamak", url: "https://github.com/TokamakUI/Tokamak", .exact("0.10.1")),
-        .package(name: "ChibiLink", url: "https://github.com/kateinoigakukun/chibi-link", .exact("1.1.0")),
+        .package(name: "ChibiLink", url: "https://github.com/kateinoigakukun/chibi-link", .exact("1.2.0")),
     ],
     targets: [
         .executableTarget(

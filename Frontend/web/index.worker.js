@@ -2,6 +2,7 @@ import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 import * as path from "path-browserify";
 import { wrapI64Polyfill } from "./i64_polyfill";
+import { wrapWASI } from "./utils"
 
 const wasmFs = new WasmFs();
 
@@ -47,24 +48,24 @@ onmessage = event => {
           path: path,
         }
       });
-      const i64Polyfill = wrapI64Polyfill(wasi.wasiImport);
+      const wasiImport = wrapWASI(wasi);
+      const i64Polyfill = wrapI64Polyfill(wasiImport);
 
       let theInstance = null;
+      const importStubs = {};
+      for (const importEntry of WebAssembly.Module.imports(theModule)) {
+        if (importEntry.kind !== "function") {
+          continue;
+        }
+        importStubs[importEntry.module] = importStubs[importEntry.module] || {};
+        importStubs[importEntry.module][importEntry.name] = function() {
+          throw new Error(`Import ${importEntry.module}::${importEntry.name} not implemented`);
+        };
+      }
       const importObject = {
-        wasi_snapshot_preview1: wasi.wasiImport,
+        ...importStubs,
+        wasi_snapshot_preview1: wasiImport,
         i64_polyfill: i64Polyfill,
-        javascript_kit: {
-          swjs_set_prop: () => {},
-          swjs_get_prop: () => {},
-          swjs_set_subscript: () => {},
-          swjs_get_subscript: () => {},
-          swjs_load_string: () => {},
-          swjs_call_function: () => {},
-          swjs_call_function_with_this: () => {},
-          swjs_create_function: () => {},
-          swjs_call_new: () => {},
-          swjs_destroy_ref: () => {},
-        },
         env: {
           _provide_mode: () => { return 0 /* linker mode */; },
           writeOutput: (ptr, length) => {
@@ -82,7 +83,9 @@ onmessage = event => {
       WebAssembly.instantiate(theModule, importObject)
         .then(instance => {
           theInstance = instance;
-          wasi.start(instance);
+          wasi.setMemory(instance.exports.memory);
+          instance.exports._initialize();
+          instance.exports.main();
         });
       break;
   }

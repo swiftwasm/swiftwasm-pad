@@ -33,8 +33,7 @@ struct Editor: View {
         let newPath = "\(location.pathname)?code=\(encodedCode)"
         let Object = JSObject.global.Object.function!
         _ = JSObject.global.history.object!.replaceState!(Object.new(), "", newPath)
-        let promise = JSObject.global.navigator.object!
-            .clipboard.object!.writeText!(location.href)
+        let promise = JSObject.global.navigator.clipboard.writeText(location.href)
         Promise(promise)!
             .catch { console.error($0) }
             .then { _ in

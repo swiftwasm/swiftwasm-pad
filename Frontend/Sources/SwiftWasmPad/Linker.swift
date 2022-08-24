@@ -1,5 +1,6 @@
 import JavaScriptKit
 import OpenCombineShim
+import Foundation
 
 class Linker {
     private let worker = swiftExport.linkerWorker.object!
@@ -69,10 +70,7 @@ func writeOutput(_: UnsafePointer<UInt8>, _ length: Int)
 
 func linkerMain() throws {
     let exports = [
-        "swjs_call_host_function",
-        "swjs_prepare_host_function_call",
-        "swjs_cleanup_host_function_call",
-        "swjs_library_version",
+        "main",
     ]
     class OutputWriter: OutputByteStream {
         private(set) var bytes: [UInt8] = []
@@ -95,8 +93,12 @@ func linkerMain() throws {
         }
     }
     let writer = OutputWriter()
-    try performLinker(CommandLine.arguments, outputStream: writer, exports: exports)
-    writer.bytes.withUnsafeBufferPointer { bufferPtr in
-        writeOutput(bufferPtr.baseAddress!, bufferPtr.count)
+    do {
+        try performLinker(CommandLine.arguments, outputStream: writer, exports: exports)
+        writer.bytes.withUnsafeBufferPointer { bufferPtr in
+            writeOutput(bufferPtr.baseAddress!, bufferPtr.count)
+        }
+    } catch let error as LocalizedError {
+        fatalError(error.errorDescription ?? String(describing: error))
     }
 }

@@ -40,17 +40,10 @@ module.exports = (mode) => {
       ]
     },
     plugins: [
-      new SwiftWebpackPlugin({
-        packageDirectory: __dirname,
-        swift_build: path.resolve(projectConfig.TOOLCHAIN, "usr/bin/swift-build"),
-        target: 'SwiftWasmPad',
-        dist: outputPath,
-        config: mode == 'development' ? 'debug' : 'release',
-        buildOptions: mode == 'development' ? [] : ['-Xswiftc', '-Osize']
-      }),
       new CopyPlugin(
         [
           { from: staticPath, to: outputPath },
+          { from: path.resolve(__dirname, `.build/wasm32-unknown-wasi/${mode == 'development' ? 'debug' : 'release'}/SwiftWasmPad.wasm`), to: outputPath },
           { from: path.resolve(__dirname, "../PreviewSystem/distribution/library.so.wasm"), to: outputPath },
         ],
       ),
