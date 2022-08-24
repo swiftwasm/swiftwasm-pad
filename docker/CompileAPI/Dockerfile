@@ -10,7 +10,7 @@ RUN /workdir/PreviewSystem/build-script.sh
 
 FROM swift:5.6-amazonlinux2
 
-ARG SWIFT_TAG=swift-wasm-5.3-SNAPSHOT-2020-08-28-a
+ARG SWIFT_TAG=swift-wasm-5.6-SNAPSHOT-2022-06-30-a
 RUN yum -y install zip wget
 
 WORKDIR /workdir
