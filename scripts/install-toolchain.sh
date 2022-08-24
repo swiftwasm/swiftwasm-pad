@@ -45,7 +45,7 @@ TOOLCHAIN_DOWNLOAD_URL="https://github.com/swiftwasm/swift/releases/download/$SW
 
 mkdir -p "$PLATFORM_TOOLCHAIN_DIR"
 cd "$PLATFORM_TOOLCHAIN_DIR"
-if [ "$TOOLCHAIN_DOWNLOAD" == *".pkg" ]; then
+if [[ "$TOOLCHAIN_DOWNLOAD" == *.pkg ]]; then
     if [ ! -e "$HOME/Library/Developer/Toolchains/$SWIFT_TAG.xctoolchain" ]; then
         wget "$TOOLCHAIN_DOWNLOAD_URL"
         installer -pkg "$TOOLCHAIN_DOWNLOAD" -target CurrentUserHomeDirectory
