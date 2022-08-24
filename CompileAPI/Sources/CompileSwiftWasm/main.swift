@@ -3,11 +3,7 @@ import NIO
 import Foundation
 
 struct Request: Codable {
-    enum Action: String, Codable {
-        case emitObject, emitExecutable
-    }
     let mainCode: String
-    let action: Action?
 }
 
 struct CompilerOutputHandler<In: Decodable>: LambdaHandler {
@@ -56,19 +52,12 @@ let handler = CompilerOutputHandler<Request> { _, request, completion in
     cleanModuleCache()
     let result = Result<ByteBuffer, Error> {
         do {
-            let action = request.action ?? .emitObject
-            let binary: Data
-            switch action {
-            case .emitObject:
-                binary = try toolchain.emitObject(for: request.mainCode)
-            case .emitExecutable:
-                binary = try toolchain.emitExecutable(for: request.mainCode)
-            }
+            let object = try toolchain.emitObject(for: request.mainCode)
             if ProcessInfo.processInfo.environment["LOCAL_LAMBDA_SERVER_ENABLED"] == nil {
                 // AWS API Gateway rejects binary response, so encode it and decode at the gateway
-                return ByteBuffer(data: binary.base64EncodedData())
+                return ByteBuffer(data: object.base64EncodedData())
             } else {
-                return ByteBuffer(data: binary)
+                return ByteBuffer(data: object)
             }
         }
         catch let error as CompileError {
