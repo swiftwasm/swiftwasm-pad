@@ -30,7 +30,8 @@ struct Toolchain {
             "-emit-object",
             tempInput.path, "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
-            "-sdk", sysroot.path
+            "-sdk", sysroot.path,
+            "-module-cache-path", tempDirectory.path
         ]
 
         arguments += previewStub.includes.flatMap {
