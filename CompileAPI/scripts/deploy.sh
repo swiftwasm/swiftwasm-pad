@@ -11,7 +11,7 @@ echo "-------------------------------------------------------------------------"
 echo "uploading \"$executable\" lambda to AWS S3"
 echo "-------------------------------------------------------------------------"
 
-aws s3 cp $workspace/.build/lambda/$executable/lambda.zip s3://compile-swiftwasm/
+aws s3 cp $workspace/.build/lambda.zip s3://compile-swiftwasm/
 
 echo "-------------------------------------------------------------------------"
 echo "updating AWS Lambda to use \"$executable\""
