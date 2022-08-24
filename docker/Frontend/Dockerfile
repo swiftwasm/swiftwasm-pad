@@ -1,5 +1,6 @@
-FROM swift:5.2
-RUN apt update && apt install nodejs npm wget curl unzip -y
+FROM ubuntu:focal
+RUN apt update && DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+  apt install nodejs npm wget curl unzip git -y
 WORKDIR /workdir/Frontend
 
 # Install toolchain
