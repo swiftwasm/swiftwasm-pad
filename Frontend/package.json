@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "./scripts/build-wasm.sh && webpack --config webpack.dev.js",
-    "build:prod": "./scripts/build-wasm.sh -c release && webpack --config webpack.prod.js && ./scripts/optimize.sh",
+    "build:prod": "./scripts/build-wasm.sh -c release && webpack --config webpack.prod.js",
     "watch": "webpack --watch --config webpack.dev.js",
     "start": "webpack-dev-server --config webpack.dev.js",
     "start:prod": "webpack-dev-server --config webpack.prod.js"
