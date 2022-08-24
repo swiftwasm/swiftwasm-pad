@@ -11,7 +11,7 @@ struct RunButton: View {
     var body: some View {
         let attributes: [HTMLAttribute: String] = [
             "id": "run-button",
-            "className": "button \(runner.isRunnable ? "" : "disabled-button")",
+            "class": "button \(runner.isRunnable ? "" : "disabled-button")",
         ]
         return DynamicHTML("button", attributes, listeners: ["click": onClick]) {
             HTML("span") { Text("RUN").foregroundColor(.white) }

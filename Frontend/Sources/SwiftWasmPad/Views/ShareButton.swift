@@ -8,7 +8,7 @@ struct ShareButton: View {
     var body: some View {
         let attributes: [HTMLAttribute: String] = [
             "id": "share-button",
-            "className": "button",
+            "class": "button",
         ]
         return DynamicHTML("button", attributes, listeners: ["click": onClick]) {
             HTML("span") { Text("Share").foregroundColor(.white) }

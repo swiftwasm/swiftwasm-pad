@@ -25,6 +25,7 @@ body {
 #root-stack {
     width: 100%;
     height: 100%;
+    display: block;
 }
 
 #panels {
@@ -79,8 +80,8 @@ body {
     display: flex;
     flex-basis: calc(50% - 3px);
     height: 100%;
+    flex-direction: column;
 }
-
 #console-pane {
     overflow-y: auto;
     font-family: "Roboto Mono",monospace !important;
