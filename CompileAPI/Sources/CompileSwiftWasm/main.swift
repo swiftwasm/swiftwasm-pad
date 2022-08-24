@@ -53,7 +53,6 @@ struct LambdaError: Error, CustomStringConvertible {
 }
 
 let handler = CompilerOutputHandler<Request> { _, request, completion in
-    cleanModuleCache()
     let result = Result<ByteBuffer, Error> {
         do {
             let action = request.action ?? .emitObject
@@ -79,15 +78,6 @@ let handler = CompilerOutputHandler<Request> { _, request, completion in
         }
     }
     completion(result)
-}
-
-func cleanModuleCache() {
-    let home = URL(fileURLWithPath: ProcessInfo.processInfo.environment["HOME"]!)
-    let fm = FileManager.default
-    let cacheDir = home.appendingPathComponent(".cache/clang/ModuleCache")
-    if fm.fileExists(atPath: cacheDir.path) && ProcessInfo.processInfo.environment["LOCAL_LAMBDA_SERVER_ENABLED"] == nil {
-        try! FileManager.default.removeItem(at: cacheDir)
-    }
 }
 
 Lambda.run(handler)
