@@ -14,8 +14,8 @@ ARG SWIFT_TAG=swift-wasm-5.3-SNAPSHOT-2020-08-28-a
 RUN yum -y install zip wget
 
 WORKDIR /workdir
-RUN wget https://github.com/kateinoigakukun/swift/releases/download/$SWIFT_TAG/$SWIFT_TAG-amazonlinux2.tar.gz
-RUN tar xfzv $SWIFT_TAG-amazonlinux2.tar.gz
+RUN wget https://github.com/swiftwasm/swift/releases/download/$SWIFT_TAG/$SWIFT_TAG-amazonlinux2_x86_64.tar.gz
+RUN tar xfzv $SWIFT_TAG-amazonlinux2_x86_64.tar.gz
 RUN mv $SWIFT_TAG /workdir/toolchain
 
 # Build main project
