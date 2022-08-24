@@ -132,3 +132,14 @@ link-shared-object-library() {
 }
 
 link-shared-object-library
+
+create_relative_modulemap() {
+  cat <<EOS > $stub_package_build_dir/checkouts/OpenCombine/Sources/COpenCombineHelpers/include/module.modulemap
+module COpenCombineHelpers {
+    umbrella header "COpenCombineHelpers.h"
+    export *
+}
+EOS
+}
+
+create_relative_modulemap
