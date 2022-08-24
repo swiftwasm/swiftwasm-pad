@@ -71,7 +71,8 @@ struct Toolchain {
         let arguments = [
             tempInput.path, "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
-            "-sdk", sysroot.path
+            "-sdk", sysroot.path,
+            "-module-cache-path", tempDirectory.path
         ]
 
         guard let inputData = code.data(using: .utf8) else {
