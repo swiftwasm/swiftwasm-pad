@@ -54,5 +54,6 @@ jobs:
     name: Build CompileAPI Docker image
     steps:
     - uses: actions/checkout@master
+    - uses: docker/setup-buildx-action@v2
     - name: Build CompileAPI image
       run: docker build -f docker/CompileAPI/Dockerfile .
