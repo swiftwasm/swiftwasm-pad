@@ -12,6 +12,6 @@ echo "-------------------------------------------------------------------------"
 echo "install toolchain"
 echo "-------------------------------------------------------------------------"
 
-# "$frontend_dir/../scripts/install-toolchain.sh"
+"$frontend_dir/../scripts/install-toolchain.sh"
 
 "$TOOLCHAIN/usr/bin/swift" build --triple wasm32-unknown-wasi -Xswiftc -Xclang-linker -Xswiftc -mexec-model=reactor -Xlinker --export=main $@
