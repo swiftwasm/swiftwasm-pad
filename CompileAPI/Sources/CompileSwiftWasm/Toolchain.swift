@@ -34,6 +34,15 @@ struct Toolchain {
         }
     }
 
+    var includeArguments: [String] {
+        previewStub.includes.flatMap {
+            ["-I", $0.path]
+        }
+        + previewStub.modulemaps.flatMap {
+            ["-Xcc", "-fmodule-map-file=\($0.path)"]
+        }
+    }
+
     func emitObject(for code: String) throws -> Data {
         let tempDirectory: URL = makeTemporalyDirectory()
         let tempInput = tempDirectory.appendingPathComponent("main.swift")
@@ -46,14 +55,7 @@ struct Toolchain {
             "-sdk", sysroot.path,
             "-module-cache-path", tempDirectory.path
         ]
-
-        arguments += previewStub.includes.flatMap {
-            ["-I", $0.path]
-        }
-        
-        arguments += previewStub.modulemaps.flatMap {
-            ["-Xcc", "-fmodule-map-file=\($0.path)"]
-        }
+        arguments += includeArguments
 
         guard let inputData = code.data(using: .utf8) else {
             throw Error.failedToEncodeCode
@@ -66,13 +68,20 @@ struct Toolchain {
     func emitExecutable(for code: String) throws -> Data {
         let tempDirectory: URL = makeTemporalyDirectory()
         let tempInput = tempDirectory.appendingPathComponent("main.swift")
-        let tempOutput: URL = tempDirectory.appendingPathComponent("main.o")
+        let tempOutput: URL = tempDirectory.appendingPathComponent("main.wasm")
 
-        let arguments = [
+        var arguments = [
             tempInput.path, "-o", tempOutput.path,
             "-target", "wasm32-unknown-wasi",
             "-sdk", sysroot.path,
-            "-module-cache-path", tempDirectory.path
+            "-module-cache-path", tempDirectory.path,
+            "-module-name", "main",
+            "-Xclang-linker", "-mexec-model=reactor",
+            "-Xlinker", "--export=main",
+        ]
+        arguments += includeArguments
+        arguments += [
+          "-L\(previewStub.root.path)", "-lJavaScriptKit",
         ]
 
         guard let inputData = code.data(using: .utf8) else {
