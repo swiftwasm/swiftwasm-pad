@@ -9,11 +9,11 @@ let package = Package(
         .executable(name: "CompileSwiftWasm", targets: ["CompileSwiftWasm"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "0.5.2"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.65.1"),
     ],
     targets: [
         .target(name: "CompileSwiftWasm", dependencies: [
-            .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+            .product(name: "Vapor", package: "vapor"),
         ]),
     ]
 )

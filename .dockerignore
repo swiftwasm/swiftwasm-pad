@@ -2,5 +2,4 @@
 /Frontend/node_modules
 /Frontend/.build
 /PreviewSystem/.build
-/PreviewSystem/distribution
 /CompileAPI/.build

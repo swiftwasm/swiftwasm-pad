@@ -30,6 +30,7 @@ tools_dir="$preview_dir/Tools"
 build_dir="$preview_dir/distribution"
 stub_package_build_dir="$build_dir/PreviewStub"
 shared_object_library="$build_dir/library.so.wasm"
+jskit_archive="$stub_package_build_dir/libJavaScriptKit.a"
 build_config=release
 
 echo "-------------------------------------------------------------------------"
@@ -129,6 +130,7 @@ link-shared-object-library() {
     --allow-undefined --whole-archive \
     --relocatable --strip-debug \
     -o "$shared_object_library"
+  set +x
 }
 
 link-shared-object-library
@@ -143,3 +145,22 @@ EOS
 }
 
 create_relative_modulemap
+
+archive_jskit_objects() {
+  local objects=$(
+    cat "$stub_package_build_dir/wasm32-unknown-wasi/Demo.product/Objects.LinkFileList" \
+      | grep -v "main.swift.o"
+  )
+  "$TOOLCHAIN/usr/bin/wasm-ld" \
+    $objects \
+    --error-limit=0 \
+    --no-gc-sections \
+    --threads=1 \
+    --allow-undefined --whole-archive \
+    --relocatable --strip-debug \
+    -o "$jskit_archive.o"
+  "$TOOLCHAIN/usr/bin/llvm-ar" crs $jskit_archive "$jskit_archive.o"
+  rm "$jskit_archive.o"
+}
+
+archive_jskit_objects
