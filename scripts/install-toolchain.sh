@@ -16,14 +16,7 @@ case $(uname -s) in
     if [ -f "/etc/os-release" ]; then
       source "/etc/os-release"
       if [ "$ID" = "ubuntu" ]; then
-        if [ "$VERSION_ID" = "18.04" ]; then
-          TOOLCHAIN_DOWNLOAD=$SWIFT_TAG-ubuntu18.04_$(uname -m).tar.gz
-        elif [ "$VERSION_ID" = "20.04" ]; then
-          TOOLCHAIN_DOWNLOAD=$SWIFT_TAG-ubuntu20.04_$(uname -m).tar.gz
-        else
-          echo "Unsupported Ubuntu version: $VERSION_ID"
-          exit 1
-        fi
+        TOOLCHAIN_DOWNLOAD="$SWIFT_TAG-ubuntu${VERSION_ID}_$(uname -m).tar.gz"
       elif [ "$ID" = "amzn" ]; then
         TOOLCHAIN_DOWNLOAD=$SWIFT_TAG-amazonlinux2_$(uname -m).tar.gz
       else
