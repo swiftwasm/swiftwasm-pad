@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  apt-get install wget curl unzip git -y
+  apt-get install wget curl unzip git libxml2 build-essential -y
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get install -y nodejs
 
 WORKDIR /workdir/Frontend
