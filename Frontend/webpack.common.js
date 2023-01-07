@@ -1,6 +1,5 @@
 const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
-const SwiftWebpackPlugin = require('@swiftwasm/swift-webpack-plugin')
 const { execSync } = require('child_process')
 
 const outputPath = path.resolve(__dirname, 'dist');
@@ -40,13 +39,13 @@ module.exports = (mode) => {
       ]
     },
     plugins: [
-      new CopyPlugin(
-        [
+      new CopyPlugin({
+        patterns: [
           { from: staticPath, to: outputPath },
           { from: path.resolve(__dirname, `.build/wasm32-unknown-wasi/${mode == 'development' ? 'debug' : 'release'}/SwiftWasmPad.wasm`), to: outputPath },
           { from: path.resolve(__dirname, "../PreviewSystem/distribution/library.so.wasm"), to: outputPath },
         ],
-      ),
+      }),
     ],
   };
   return config;
